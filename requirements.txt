@@ -1,0 +1,7 @@
+
+gunicorn
+psycopg2-binary
+whitenoise
+bootstrap4
+requests
+Django==5.1.6
