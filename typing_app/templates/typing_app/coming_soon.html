@@ -1,0 +1,18 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Coming Soon - Stay Tuned!{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="fw-bold">🚀 Exciting Features Coming Soon!</h1>
+    <p class="lead">We're working hard to bring you new features. Stay tuned!</p>
+
+    <!-- <div class="my-4">
+        <img src="https://via.placeholder.com/600x300?text=Coming+Soon" alt="Coming Soon" class="img-fluid rounded">
+    </div> -->
+
+    <p class="text-muted">🔹 Keep checking back for updates, or follow us for the latest news.</p>
+
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">🏠 Go to Home</a>
+</div>
+{% endblock %}

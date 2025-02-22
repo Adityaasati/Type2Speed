@@ -1,0 +1,16 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Error - Typing Test{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <h1 class="text-danger fw-bold">⚠ Oops! Something Went Wrong</h1>
+    <p class="lead">We encountered an issue while processing your request.</p>
+
+    <div class="alert alert-warning mt-4">
+        <strong>🔹 Error Details:</strong> {{ message|default:"An unexpected error occurred. Please try again later." }}
+    </div>
+
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">🏠 Go to Home</a>
+</div>
+{% endblock %}

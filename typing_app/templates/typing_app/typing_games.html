@@ -1,0 +1,32 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Typing Games - type2speed{% endblock %}
+{% block meta_description %}Enjoy fun & interactive typing games to improve your speed and accuracy.{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">🎮 Typing Games</h1>
+    <p class="lead">Improve your typing speed while having fun!</p>
+</div>
+
+<!-- Typing Games List -->
+<div class="container text-center">
+    <div class="row mt-4 justify-content-center g-3">
+        {% for game in games %}
+        <div class="col-md-4 col-sm-6">
+            <a href="{% url 'typing-game' game.slug %}"
+               class="btn btn-outline-primary btn-lg w-100 d-flex align-items-center justify-content-center p-3 rounded shadow mb-3">
+                <span class="fs-3">{{ game.icon }}</span>
+                <span class="ms-2">{{ game.name }}</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="games-page" %}
+</div>
+
+{% endblock %}

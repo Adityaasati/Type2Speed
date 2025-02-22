@@ -1,0 +1,97 @@
+
+
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Master Your Typing Skills - Type2Speed{% endblock %}
+{% block meta_description %}Take AI-powered typing tests and track your speed & accuracy. Free CHSL, CGL, and NTPC typing PRACTISE!{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">🚀 Master Your Typing Skills</h1>
+    <p class="lead">Boost your speed & accuracy with AI-powered typing tests.</p>
+
+    <!-- Typing Test Start Button -->
+    <a href="{% url 'exam-instructions' 'PRACTISE' %}" class="btn btn-primary btn-lg mt-3">
+        Start Typing Test Now 🔥
+    </a>
+
+    <!-- AI-Powered Loader -->
+    <div class="typing-loader mt-4"></div>
+</div>
+
+<!-- Live Stats Counter -->
+<!-- <div class="text-center my-4">
+    <h3>🔢 Live Typing Stats</h3>
+    <p><span id="liveUsers">0</span> people typing right now!</p>
+</div> -->
+
+
+<div class="container text-center">
+    <div class="row mt-4 justify-content-center g-3">  <!-- Added g-3 for spacing -->
+        {% for exam in exams %}
+        <div class="col-md-{{ column_size }} col-sm-6 d-flex justify-content-center">
+            <a href="{% url 'exam-instructions' exam.slug %}" class="btn btn-outline-{{ exam.color }} btn-lg w-100">
+                {{ exam.name }} Typing Test
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+<!-- Feedback/Suggestion Box -->
+<div class="container mt-5 pt-5">
+    <h3 class="text-center"><i>💡 Have Suggestions? Let Us Know!</i></h3>
+    <form action="{% url 'feedback' %}" method="post" class="p-3 border rounded shadow-sm bg-light">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="email" class="form-label"><strong>Your Email:</strong></label>
+            <input type="email" name="email" id="email" class="form-control" required placeholder="Enter your email">
+        </div>
+        <div class="mb-3">
+            <label for="suggestion" class="form-label"><strong>Your Suggestion:</strong></label>
+            <textarea name="suggestion" id="suggestion" rows="4" class="form-control" required placeholder="Write your suggestion..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Submit Feedback ✅</button>
+    </form>
+</div>
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="homepage-top" %}
+</div>
+
+<!-- Typing Animation Loader -->
+<style>
+    .typing-loader {
+        font-size: 20px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .typing-loader::after {
+        content: "Typing...";
+        animation: typing 1.5s infinite;
+    }
+    @keyframes typing {
+        0% { content: "Typing." }
+        33% { content: "Typing.." }
+        66% { content: "Typing..." }
+    }
+</style>
+
+<!-- Live Users Script -->
+<script>
+    function updateLiveUsers() {
+        let count = Math.floor(Math.random() * 100) + 50;  // Random 50-150 users
+        document.getElementById("liveUsers").textContent = count;
+    }
+    setInterval(updateLiveUsers, 5000);
+    updateLiveUsers();
+</script>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}{{ game_name|title }} - Typing Challenge{% endblock %}
+{% block meta_description %}Test your typing speed in the {{ game_name|title }} game!{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">🎮 {{ game_name|title }} Challenge</h1>
+    <p class="lead">Improve your typing skills with this fun and engaging game.</p>
+</div>
+
+{% if game_name == "speed_typing" %}
+<div class="container text-center">
+    <button class="btn btn-primary mt-2" onclick="startGame()">Start Game 🚀</button>
+    <p id="passageText" class="fw-bold mt-3"></p>
+    <textarea id="userInput" class="form-control mt-3" rows="5" disabled></textarea>
+</div>
+{% elif game_name == "key_hit_trainer" %}
+<div class="container text-center">
+    <button class="btn btn-primary mt-2" onclick="startKeyHitGame()">Start Game 🚀</button>
+    <h2 id="keyDisplay" class="mt-3"></h2>
+</div>
+{% elif game_name == "missing_word" %}
+<div class="container text-center">
+    <button class="btn btn-primary mt-2" onclick="startMissingWordGame()">Start Game 🚀</button>
+    <p id="passageText" class="fw-bold mt-3"></p>
+</div>
+{% endif %}
+{% endblock %}

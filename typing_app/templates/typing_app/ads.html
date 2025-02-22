@@ -1,0 +1,10 @@
+{% load static %}
+{% if position %}
+    {% for ad in ads %}
+        {% if ad.name == position and ad.active %}
+            <div class="text-center my-4">
+                {{ ad.code|safe }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
