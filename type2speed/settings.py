@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['www.type2speed.com','type2speed.com','167.71.227.79','127.0.0.1','localhost']
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
