@@ -26,13 +26,7 @@ SECRET_KEY = 'django-insecure-6qjf&&25x0#orvqj&bev2jw9nu_6-!k*saw2g6pzj&9732&j0u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'type2speed.com',    # Your domain name
-    'www.type2speed.com', # With www
-    '167.71.227.79',     # Your server’s public IP address
-    '127.0.0.1',          # Localhost
-    'localhost'           # Local access
-]
+
 
 
 
