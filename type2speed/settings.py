@@ -29,7 +29,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['www.type2speed.com','type2speed.com','167.71.227.79','127.0.0.1','localhost']
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -59,7 +58,10 @@ ROOT_URLCONF = 'type2speed.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),  # Global templates (optional)
+            os.path.join(BASE_DIR, 'typing_app', 'templates'),  # App-specific templates
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,14 +128,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
+# STATIC_URL = '/static/'
+
+# # Define where Django should collect static files for production
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# # Define additional static file directories (only if you manually put static files there)
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),  # Ensure this directory exists
+# ]
+
 STATIC_URL = '/static/'
 
-# Define where Django should collect static files for production
+# Directory where `collectstatic` will store all static files for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Define additional static file directories (only if you manually put static files there)
+# Define additional static file directories
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Ensure this directory exists
+    os.path.join(BASE_DIR, 'typing_app', 'static'),  # Ensure this directory exists
 ]
 
 # Default primary key field type
