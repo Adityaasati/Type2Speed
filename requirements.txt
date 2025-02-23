@@ -1,7 +1,17 @@
 
-gunicorn
-psycopg2-binary
-whitenoise
-bootstrap4
-requests
 Django==5.1.6
+idna
+Pillow
+psycopg2-binary
+python-decouple
+pytz
+razorpay
+requests
+simplejson
+
+
+urllib3
+tzdata
+
+gunicorn
+sqlparse==0.5.3
