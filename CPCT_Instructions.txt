@@ -1,0 +1,11 @@
+The typing test will be conducted separately for 15 minutes each for both Hindi and English languages.
+The minimum qualifying score for Hindi typing in the CPCT exam is 20 words per minute.
+The minimum qualifying score for English typing in the CPCT exam is 30 words per minute.
+Only use the specified keys or key combinations to type the given text in the exam.
+Do not enter any special characters or symbols other than those provided in the text.
+Avoid toggling between languages or changing keyboard input settings for any reason during the test.
+Once the exam is submitted and the summary appears, do not press backspace or any other key.
+Typing mistakes in the original word field are allowed, but the correct spelling must be typed.
+Corrections and deletions are allowed for typed words during the test.
+Correct Words Per Minute (NWPM) will be your final result for the typing test.
+In the CPCT exam, there are separate scorecards for computer proficiency and the typing test.

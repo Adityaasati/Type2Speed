@@ -1,0 +1,11 @@
+Candidates must type at least 300 words in English or 250 words in Hindi within 10 minutes.
+Candidates must maintain a minimum typing speed of 30 words per minute in English or 25 words per minute in Hindi.
+5% of typing mistakes are ignored.
+For every additional mistake beyond the 5% allowance, the corresponding number of words will be deducted from the total typed.
+Each incorrect word after the 5% error relaxation results in a penalty of 10 times the number of errors.
+The test session includes:
+1-minute typing practice
+30-second break
+10-minute typing test
+Candidates can retype the passage from the beginning within the 10-minute test duration.
+No editing tools or spell check can be used during the typing test.

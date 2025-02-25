@@ -1,0 +1,9 @@
+The test duration is 15 minutes.
+Candidates must type a passage consisting of approximately 2,000 key depressions.
+Candidates must meet the error limits based on their category.
+Retyping the passage is not allowed, but candidates can use the remaining time to correct errors.
+Use the Tab key to start a new paragraph.
+Ensure to insert one space after each punctuation mark.
+Any irrelevant matter or numbers typed will be considered mistakes.
+Candidates must type the test passage in the medium they have opted for.
+Any incomplete word due to any reason will be treated as one full mistake.

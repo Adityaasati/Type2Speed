@@ -44,3 +44,9 @@ class AdPlacementAdmin(admin.ModelAdmin):
     list_display = ('name', 'active')
     search_fields = ('name',)
     list_filter = ('active',)
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('email', 'suggestion','submitted_at')
+    search_fields = ('email',)
+    list_filter = ('suggestion',)

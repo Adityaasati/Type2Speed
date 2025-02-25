@@ -1,28 +1,30 @@
-{% extends 'typing_app/base.html' %} {% block title %}Typing Test - {{ exam_type
-}}{% endblock %} {% block meta_description %}Typing test for {{ exam_type }}
-exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Typing Test - {{ exam_type }}{% endblock %}
+
+{% block meta_description %}Typing test for {{ exam_type }} exam. Improve your WPM and accuracy.{% endblock %}
+
+{% block content %}
 <!-- Typing Test Header -->
 <style>
     .hindi-text {
         font-family: 'Mangal', sans-serif;
         font-size: 22px;
-      }
-    
-      /* ✅ Default English font remains */
-      .english-text {
+    }
+
+    /* ✅ Default English font remains */
+    .english-text {
         font-family: system-ui, -apple-system, sans-serif;
         font-size: 18px;
-      }
-    
-      .correct {
+    }
+
+    .correct {
         background-color: rgba(0, 255, 0, 0.3); /* ✅ Light Green */
-      }
-    
-      .incorrect {
+    }
+
+    .incorrect {
         background-color: rgba(255, 0, 0, 0.3); /* ✅ Light Red */
-      }
-  
-    
+    }
 
     .passage-container {
         max-height: 250px; /* Ensures passage can scroll */
@@ -33,39 +35,56 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
         border: 2px solid #ddd;
         white-space: pre-line; /* Ensures correct word wrapping */
     }
-    
- 
 
-  .typing-box {
-    max-height: 150px; /* Typing Box Scroll Limit */
-    overflow-y: auto;
-  }
+    .typing-box {
+        max-height: 150px; /* Typing Box Scroll Limit */
+        overflow-y: auto;
+    }
 
-  .stats-box {
-    border-left: 4px solid #007bff;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    position: sticky;
-    top: 20px; /* Keeps Stats Visible */
-  }
+    .stats-box {
+        border-left: 4px solid #007bff;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        position: sticky;
+        top: 20px; /* Keeps Stats Visible */
+    }
+
+    /* When CGL or CHSL, expand the passage and typing box */
+    .cgl-chsl .passage-container,
+    .cgl-chsl .typing-box {
+        width: 100%; /* Make them take full width */
+    }
+
+  
+    .cgl-chsl .stats-box {
+        display: none;
+    }
+
+    /* Adjust grid layout for full width on CGL/CHSL */
+    .cgl-chsl .col-md-8 {
+        max-width: 100%; /* Full width for passage and typing box */
+    }
+
+    .cgl-chsl .col-md-4 {
+        display: none; /* Hide stats section */
+    }
 </style>
 
 <div class="container my-4">
   <div class="row">
 
     <!-- Left Section: Passage + Typing Box -->
-    <div class="col-md-8">
+    <div class="col-md-8 {% if exam_type == 'CGL' or exam_type == 'CHSL' %} cgl-chsl {% endif %}">
       <h2 class="fw-bold">🚀 {{ exam_type|default:"Unknown" }} Typing Test</h2>
       <p class="lead">
         Type as accurately as possible. The test will auto-submit in
-        <span id="timer" class="fw-bold text-danger">20</span>.
+        <span id="timer" class="fw-bold text-danger">20</span> seconds.
       </p>
 
-      
-    <div id="passageContainer" class="passage-container mt-3 p-3 border rounded bg-light" data-passage="{{ passage }}">
+      <div id="passageContainer" class="passage-container mt-3 p-3 border rounded bg-light" data-passage="{{ passage }}">
         <p id="passageText" class="fs-5">{{ passage }}</p>
-    </div>
+      </div>
 
       <textarea
         id="userInput"
@@ -82,9 +101,7 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
       </button>
     </div>
 
-
     {% if exam_type == "CPCT" or exam_type == "PRACTISE" %}
-
     <div class="col-md-4">
       <div class="stats-box p-3 border rounded bg-light">
         <h5 class="fw-bold text-center">📊 Typing Stats</h5>
@@ -108,17 +125,14 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
           <span id="pendingWordCount">{{ passage|wordcount }}</span>
         </p>
         {% if language == "hindi" %}
-    <label for="keyboardType">Select Keyboard Type:</label>
-<select id="keyboardType" class="form-select">
-    <option value="remington">Remington (Traditional)</option>
-    <option value="inscript">Inscript Keyboard (Unicode)</option>
-</select>
-
-
-    {% endif %}
+        <label for="keyboardType">Select Keyboard Type:</label>
+        <select id="keyboardType" class="form-select">
+            <option value="remington">Remington (Traditional)</option>
+            <option value="inscript">Inscript Keyboard (Unicode)</option>
+        </select>
+        {% endif %}
       </div>
     </div>
-    
     {% endif %}
   </div>
 </div>
@@ -136,7 +150,6 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
   <input type="hidden" name="keystrokes" id="keystrokesField" />
   <input type="hidden" name="session_id" id="sessionIdField" />
 </form>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -200,7 +213,6 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
             let pendingWords = Math.max(0, passageWordCount - typedWords);
     
             let isCPCT = "{{ exam_type }}" === "CPCT" || "{{ exam_type }}" === "PRACTISE";
-
     
             if (isCPCT) {
                 updateStat("errorCount", errors);
@@ -270,7 +282,6 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
             });
         }
     });
-    
 </script>
 
-   {% endblock %}
+{% endblock %}

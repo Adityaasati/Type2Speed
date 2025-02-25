@@ -5,16 +5,16 @@ import uuid
 import random
 import re
 from difflib import SequenceMatcher
-from .models import ExamContent, TestResult, AdPlacement, Feedback, TypingGameResult
+from .models import *
 from .forms import FeedbackForm
-
+import time
 
 
 def home_view(request):
     """Renders the homepage with dynamic exam options."""
     exams = [
-        # {"name": "CHSL", "slug": "CHSL", "color": "primary"},
-        # {"name": "CGL", "slug": "CGL", "color": "success"},
+        {"name": "CHSL", "slug": "CHSL", "color": "primary"},
+        {"name": "CGL", "slug": "CGL", "color": "success"},
         # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
         {"name": "CPCT", "slug": "CPCT", "color": "danger"},
         # {"name": "IBPS", "slug": "IBPS", "color": "info"},
@@ -108,53 +108,147 @@ def typing_test_view(request, exam_type, passage_id=None):
     })
 
 
-def calculate_ssc_accuracy(passage, user_input):
-    """ Calculates accuracy for SSC exams (CHSL, CGL, NTPC) based on word mistakes. """
-    passage_words = passage.split()
-    user_words = user_input.split()
+# Helper function to calculate WPM, accuracy, and handle mistakes
+def calculate_wpm_and_accuracy(typed_text, passage_text,duration):
+    words_typed = typed_text.split()
+    words_passage = passage_text.split()
 
-    passage_length = len(passage_words)
-    user_input_length = len(user_words)
-
-    full_mistakes = 0
-    half_mistakes = 0
-    error_words = []
-
-    if passage == user_input:
-        return {"accuracy": 100, "errors": 0, "error_words": []}  
-
-    matcher = SequenceMatcher(None, passage_words, user_words)
-    correct_words = sum(block.size for block in matcher.get_matching_blocks()) - 1  
-
-    missing_words = max(0, passage_length - user_input_length)
-    extra_words = max(0, user_input_length - passage_length)
-    incorrect_words = passage_length - correct_words  
-
-    full_mistakes += incorrect_words + missing_words + extra_words
-
-    for passage_word, user_word in zip(passage_words, user_words):
-        if passage_word != user_word:
-            if passage_word.lower() == user_word.lower():
-                half_mistakes += 1  
-            elif passage_word.strip(".,!?") == user_word.strip(".,!?"):
-                half_mistakes += 1  
-            elif passage_word.replace(" ", "") == user_word.replace(" ", ""):
-                half_mistakes += 1  
-            else:
-                full_mistakes += 1  
-                error_words.append(user_word)
-
-    calculated_accuracy = (correct_words / passage_length) * 100 if passage_length > 0 else 0
-    calculated_accuracy = max(0, min(100, calculated_accuracy))
-
-    total_errors = full_mistakes + (half_mistakes * 0.5)
-    
-    return {
-        "accuracy": round(calculated_accuracy, 2),
-        "errors": round(total_errors, 2),
-        "error_words": error_words
+    total_words_typed = len(words_typed)
+    correct_words = 0
+    mistakes = {
+        'full': 0,  # Full mistakes count
+        'half': 0,  # Half mistakes count
+        'omissions': 0,  # Omission errors (full mistakes)
+        'substitutions': 0,  # Substitution errors (full mistakes)
+        'spelling_errors': 0,  # Spelling errors (full mistakes)
+        'repetitions': 0,  # Repetition errors (full mistakes)
+        'incomplete_words': 0,  # Incomplete words (full mistakes)
+        'additions': 0,  # Addition errors (full mistakes)
+        'spacing': 0,  # Spacing errors (half mistakes)
+        'capitalization': 0,  # Capitalization errors (half mistakes)
+        'punctuation': 0  # Punctuation errors (half mistakes)
     }
 
+    # To handle word-by-word comparison
+    for i in range(min(len(words_typed), len(words_passage))):
+        typed_word = words_typed[i]
+        correct_word = words_passage[i]
+        
+        if typed_word != correct_word:
+            mistakes['full'] += 1  # Count as a full mistake
+
+            # Additional checks for specific full mistakes
+            if typed_word == '':
+                mistakes['omissions'] += 1  # Omission
+            elif typed_word != correct_word:
+                mistakes['substitutions'] += 1  # Substitution
+
+    # Check for additional words typed (Additions)
+    if len(words_typed) > len(words_passage):
+        mistakes['full'] += len(words_typed) - len(words_passage)
+        mistakes['additions'] += len(words_typed) - len(words_passage)
+
+    # Check for repetition of words
+    seen_words = set()
+    for word in words_typed:
+        if word in seen_words:
+            mistakes['full'] += 1  # Repeated word is a full mistake
+            mistakes['repetitions'] += 1  # Track repetition
+        seen_words.add(word)
+
+    # Check for incomplete words (half-typed words)
+    for word in words_typed:
+        if len(word) < 2:  # A basic check for incomplete words (e.g., "h" instead of "hello")
+            mistakes['full'] += 1
+            mistakes['incomplete_words'] += 1  # Track incomplete word
+
+    # Check for spacing errors (half mistakes)
+    for i in range(1, len(words_typed)):
+        if words_typed[i-1] == '' or words_typed[i] == '':
+            mistakes['half'] += 1  # No space or undesired space between words
+            mistakes['spacing'] += 1  # Track spacing errors
+
+    # Check for capitalization errors (half mistakes)
+    for typed_word, correct_word in zip(words_typed, words_passage):
+        if typed_word.lower() == correct_word.lower() and typed_word != correct_word:
+            mistakes['half'] += 1  # Incorrect capitalization is a half mistake
+            mistakes['capitalization'] += 1  # Track capitalization errors
+
+    # Check for punctuation errors (half mistakes)
+    for typed_word, correct_word in zip(words_typed, words_passage):
+        if typed_word.strip(",.!?") == correct_word.strip(",.!?") and typed_word != correct_word:
+            mistakes['half'] += 1  # Incorrect punctuation is a half mistake
+            mistakes['punctuation'] += 1  # Track punctuation errors
+
+    # Calculate WPM (Words per Minute)
+    wpm = total_words_typed / duration if duration > 0 else 0
+
+    # Round the WPM to 2 decimal places to make it more readable
+    wpm = round(wpm, 2)
+
+    # Calculate accuracy
+    accuracy = (correct_words / total_words_typed) * 100 if total_words_typed > 0 else 0
+
+    # Return all calculated metrics
+    return wpm, accuracy, mistakes, total_words_typed, len(typed_text)  # Returning key depressions as length of typed text
+
+def calculate_ssc_view(passage, user_input, duration):
+    """Calculate typing test results for SSC exams (CGL/CHSL)"""
+    start_time = time.time()  # Start time for calculation
+    
+    # Calculate WPM, accuracy, and mistakes using the existing helper function
+    typed_text = user_input.strip() 
+
+    # Calculate WPM, accuracy, and mistakes
+    wpm, accuracy, mistakes, total_words_typed, actual_key_depressions = calculate_wpm_and_accuracy(typed_text, passage,duration)
+    # Save the test result (if you want to store it in the database)
+    # test_result = TestResult(
+    #     wpm=wpm,
+    #     accuracy=accuracy,
+    #     full_mistakes=mistakes['full'],
+    #     half_mistakes=mistakes['half'],
+    #     omissions=mistakes['omissions'],
+    #     substitutions=mistakes['substitutions'],
+    #     spelling_errors=mistakes['spelling_errors'],
+    #     repetitions=mistakes['repetitions'],
+    #     incomplete_words=mistakes['incomplete_words'],
+    #     additions=mistakes['additions'],
+    #     spacing=mistakes['spacing'],
+    #     capitalization=mistakes['capitalization'],
+    #     punctuation=mistakes['punctuation'],
+    #     total_words_typed=total_words_typed,
+    #     actual_key_depressions=actual_key_depressions,
+    #     time_taken=(time.time() - start_time)
+    # )
+    # test_result.save()
+
+    # Prepare data for rendering in the result.html page
+    result = {
+        'passage': passage,
+        'typed_text': typed_text,
+        'wpm': wpm,
+        'accuracy': accuracy,
+        'full_mistakes': mistakes['full'],
+        'half_mistakes': mistakes['half'],
+        'omissions': mistakes['omissions'],
+        'substitutions': mistakes['substitutions'],
+        'spelling_errors': mistakes['spelling_errors'],
+        'repetitions': mistakes['repetitions'],
+        'incomplete_words': mistakes['incomplete_words'],
+        'additions': mistakes['additions'],
+        'spacing': mistakes['spacing'],
+        'capitalization': mistakes['capitalization'],
+        'punctuation': mistakes['punctuation'],
+        'total_words_typed': total_words_typed,
+        'actual_key_depressions': actual_key_depressions,
+        'time_taken': (time.time() - start_time),
+    }
+    return result
+
+
+
+
+# Main View for Calculating SSC Exam (CGL/CHSL)
 
 def calculate_cpct_metrics(passage, user_input, duration):
     """Minimal CPCT calculations with only essential metrics."""
@@ -227,34 +321,56 @@ def test_result_view(request, exam_type):
         if exam_type == "CPCT" or exam_type == "PRACTISE":
             result = calculate_cpct_metrics(passage, user_input,duration)
         else:
-            result = calculate_ssc_accuracy(passage, user_input)  # Default SSC method
+            result = calculate_ssc_view(passage, user_input,duration)  # Default SSC method
 
         # ✅ Save Test Result
-        TestResult.objects.create(
-            exam_content=exam_content,
-            session_id=session_id,
-            wpm=0,  # CPCT does not need WPM
-            errors=result["errors"],
-            backspaces=backspaces,
-            spaces=spaces
-        )
+        # TestResult.objects.create(
+        #     exam_content=exam_content,
+        #     session_id=session_id,
+        #     wpm=0,  # CPCT does not need WPM
+        #     errors=result["errors"],
+        #     backspaces=backspaces,
+        #     spaces=spaces
+        # )
         nwpm = result.get("net_wpm", 0)
         language = request.POST.get("language", "english") 
         scaled_score = calculate_scaled_score(nwpm,language, exam_type)
+        
+        if exam_type == "CPCT" or exam_type =="PRACTICE":
 
-        return render(request, "typing_app/result.html", {
-            "exam_type": exam_type,
-            "language": language,
-            "errors": result["errors"],
-            "backspaces": backspaces,
-            "spaces": spaces,
-            "scaled_score":scaled_score,
-            "net_wpm": result["net_wpm"],
-            "keystrokes_count": result["keystrokes_count"],
-            "total_word_count": result["total_word_count"],
-            "typed_word_count": result["typed_word_count"],
-            "pending_word_count": result["pending_word_count"],
-        })
+            return render(request, "typing_app/result.html", {
+                "exam_type": exam_type,
+                "language": language,
+                "errors": result["errors"],
+                "backspaces": backspaces,
+                "spaces": spaces,
+                "scaled_score":scaled_score,
+                "net_wpm": result["net_wpm"],
+                "keystrokes_count": result["keystrokes_count"],
+                "total_word_count": result["total_word_count"],
+                "typed_word_count": result["typed_word_count"],
+                "pending_word_count": result["pending_word_count"],
+            })
+        elif exam_type== "CGL" or exam_type == "CHSL":
+            return render(request, "typing_app/result.html", {
+                'exam_type': exam_type,
+            'wpm': result['wpm'],
+            'accuracy': result['accuracy'],
+            'full_mistakes': result['full_mistakes'],
+            'half_mistakes': result['half_mistakes'],
+            'omissions': result['omissions'],
+            'substitutions': result['substitutions'],
+            'spelling_errors': result['spelling_errors'],
+            'repetitions': result['repetitions'],
+            'incomplete_words': result['incomplete_words'],
+            'additions': result['additions'],
+            'spacing': result['spacing'],
+            'capitalization': result['capitalization'],
+            'punctuation': result['punctuation'],
+            'total_words_typed': result['total_words_typed'],
+            'actual_key_depressions': result['actual_key_depressions'],
+            'time_taken': result['time_taken'],
+            })
 
 
 def feedback_view(request):

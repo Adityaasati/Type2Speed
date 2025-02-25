@@ -50,11 +50,28 @@ class TestResult(models.Model):
     backspaces = models.PositiveIntegerField(default=0) 
     spaces = models.PositiveIntegerField(default=0)
     test_date = models.DateTimeField(auto_now_add=True)
+    full_mistakes = models.PositiveIntegerField(default=0)  # Count of full mistakes (e.g., omissions, substitutions)
+    half_mistakes = models.PositiveIntegerField(default=0)
+    time_taken = models.FloatField(default=0.0)
+    total_errors = models.PositiveIntegerField(default=0)
+    omissions = models.PositiveIntegerField(default=0)  # Omission errors (full mistakes)
+    substitutions = models.PositiveIntegerField(default=0)  # Substitution errors (full mistakes)
+    spelling_errors = models.PositiveIntegerField(default=0)  # Spelling errors (full mistakes)
+    repetitions = models.PositiveIntegerField(default=0)  # Repetition errors (full mistakes)
+    incomplete_words = models.PositiveIntegerField(default=0)  # Incomplete words (full mistakes)
+    additions = models.PositiveIntegerField(default=0)
+    spacing = models.PositiveIntegerField(default=0)  # Spacing errors (half mistakes)
+    capitalization = models.PositiveIntegerField(default=0)  # Capitalization errors (half mistakes)
+    punctuation = models.PositiveIntegerField(default=0)
+    total_words_typed = models.PositiveIntegerField(default=0)  # Total words typed
+    actual_key_depressions = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Test: {self.exam_content.exam_type if self.exam_content else 'Unknown'} | WPM: {self.wpm} | Acc: {self.accuracy}%"
 
-
+    def calculate_total_errors(self):
+        self.total_errors = self.full_mistakes + self.half_mistakes
+        self.save()
 
 class AdPlacement(models.Model):
     """Allows management of ad placement in templates."""

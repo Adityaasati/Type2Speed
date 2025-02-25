@@ -5,28 +5,28 @@
 {% block content %}
 <div class="container mt-5">
     <div class="text-center">
-        <h2 class="fw-bold">🏆 {{ exam_type }} Typing Test Results</h2>
-        <p>Your results have been calculated based on your typed passage.</p>
+        <h2 class="fw-bold mb-3">🏆 {{ exam_type }} Typing Test Results</h2>
+        <p>Your results have been calculated based on your typed passage. Here’s how you performed:</p>
     </div>
-
+    {% if exam_type == "CPCT" %}
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8 col-lg-6">
             <div class="stats-box p-4 border rounded bg-light shadow-sm">
                 <h5 class="fw-bold text-center">📊 Typing Stats</h5>
-                <p>📊 <strong>Net Words Per Minute (NWPM):</strong> <span class="text-primary">{{ net_wpm }}</span></p>
-                <p>⌨ <strong>Keystrokes Count:</strong> {{ keystrokes_count }}</p>
-                <p>❌ <strong>Error Count:</strong> {{ errors }}</p>
-                <p>⌨ <strong>Backspace Count:</strong> {{ backspaces }}</p>
-                <p>📖 <strong>Total Word Count:</strong> {{ total_word_count }}</p>
-                <p>✍ <strong>Typed Word Count:</strong> {{ typed_word_count }}</p>
-                <p>🕑 <strong>Pending Word Count:</strong> {{ pending_word_count }}</p>
-                <p>🎯 <strong>Scaled Score:</strong> <span class="text-success">{{ scaled_score }}%</span></p>
+                <hr>
+                <p><strong>📊 Net Words Per Minute (NWPM):</strong> <span class="text-primary">{{ net_wpm }}</span></p>
+                <p><strong>⌨ Keystrokes Count:</strong> {{ keystrokes_count }}</p>
+                <p><strong>❌ Error Count:</strong> {{ errors }}</p>
+                <p><strong>⌨ Backspace Count:</strong> {{ backspaces }}</p>
+                <p><strong>📖 Total Word Count:</strong> {{ total_word_count }}</p>
+                <p><strong>✍ Typed Word Count:</strong> {{ typed_word_count }}</p>
+                <p><strong>🕑 Pending Word Count:</strong> {{ pending_word_count }}</p>
+                <p><strong>🎯 Scaled Score:</strong> <span class="text-success">{{ scaled_score }}%</span></p>
             </div>
         </div>
     </div>
 
-    {% if exam_type == "CPCT" %}
-
+    
     <div class="mt-4">
         <h4 class="text-center fw-bold">📜 Certification Scaling Information</h4>
         <p class="text-center">
@@ -74,6 +74,59 @@
                     <tr><td>≥ 81</td><td>100%</td></tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+ 
+
+    {% elif exam_type == "CGL" or exam_type == "CHSL" %}
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="stats-box p-4 border rounded bg-light shadow-sm">
+                <h5 class="fw-bold text-center">📊 Typing Stats</h5>
+                <hr>
+                <p><strong>📊 Total Word Count:</strong> {{ total_words_typed }}</p>
+                <!-- <p><strong>⌨ Total Key Depressions:</strong> {{ actual_key_depressions }}</p> -->
+
+                <p><strong>✍ Key Depressions by You:</strong> {{ actual_key_depressions }}</p>
+                <p><strong>🕑 Words per Minute:</strong> {{ wpm }}</p>
+                <p><strong>🎯 Accuracy:</strong> {{ accuracy }}</p>
+                <p><strong>❌ Full Mistakes:</strong> {{ full_mistakes }}</p>
+                <p><strong>📖 Half Mistakes:</strong> {{ half_mistakes }}</p>
+
+            
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <h4 class="text-center fw-bold">📋 Mistakes Breakdown</h4>
+        <p class="text-center">Below are the detailed statistics of your typing mistakes:</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="stats-box p-4 border rounded bg-light shadow-sm">
+                <h5 class="fw-bold">Full Mistakes</h5>
+                <ul class="list-unstyled">
+                    <li><strong> 🗑️ Omissions:</strong> {{ omissions }}</li>
+    <li><strong>🔄 Substitutions:</strong> {{ substitutions }}</li>
+    <li><strong>✏️ Spelling Errors:</strong> {{ spelling_errors }}</li>
+    <li><strong>🔁 Repetition of Words:</strong> {{ repetitions }}</li>
+    <li><strong>⏳ Incomplete Words:</strong> {{ incomplete_words }}</li>
+    <li><strong>➕ Addition Errors:</strong> {{ additions }}</li>
+   
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="stats-box p-4 border rounded bg-light shadow-sm">
+                <h5 class="fw-bold">Half Mistakes</h5>
+                <ul class="list-unstyled">
+                    <li><strong>␣ Spacing Errors:</strong> {{ spacing }}</li>
+                    <li><strong>🔠 Wrong Capitalizations:</strong> {{ capitalization }}</li>
+                    <li><strong>❗ Punctuation Errors:</strong> {{ punctuation }}</li>
+                </ul>
+            </div>
         </div>
     </div>
     {% endif %}

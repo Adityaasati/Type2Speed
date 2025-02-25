@@ -3,13 +3,25 @@
 exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
 <!-- Typing Test Header -->
 <style>
-    .correct {
-        background-color: rgba(0, 255, 0, 0.3); /* Light Green */
-    }
+    .hindi-text {
+        font-family: 'Mangal', sans-serif;
+        font-size: 22px;
+      }
     
-    .incorrect {
-        background-color: rgba(255, 0, 0, 0.3); /* Light Red */
-    }
+      /* ✅ Default English font remains */
+      .english-text {
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 18px;
+      }
+    
+      .correct {
+        background-color: rgba(0, 255, 0, 0.3); /* ✅ Light Green */
+      }
+    
+      .incorrect {
+        background-color: rgba(255, 0, 0, 0.3); /* ✅ Light Red */
+      }
+  
     
 
     .passage-container {
@@ -41,15 +53,13 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
 
 <div class="container my-4">
   <div class="row">
-    <p>Passage ID: {{ passage_id }}</p>
-<p>Exam Type: {{ exam_type }}</p>
 
     <!-- Left Section: Passage + Typing Box -->
     <div class="col-md-8">
       <h2 class="fw-bold">🚀 {{ exam_type|default:"Unknown" }} Typing Test</h2>
       <p class="lead">
         Type as accurately as possible. The test will auto-submit in
-        <span id="timer" class="fw-bold text-danger">10:00</span>.
+        <span id="timer" class="fw-bold text-danger">20</span>.
       </p>
 
       
@@ -72,12 +82,13 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
       </button>
     </div>
 
-    {% if exam_type == "CPCT" %}
-    <!-- Right Section: CPCT Stats Box (Only for CPCT Exam) -->
+
+    {% if exam_type == "CPCT" or exam_type == "PRACTISE" %}
+
     <div class="col-md-4">
       <div class="stats-box p-3 border rounded bg-light">
         <h5 class="fw-bold text-center">📊 Typing Stats</h5>
-        <p><strong>You are viewing:</strong> English Typing Test</p>
+        <p><strong>You are viewing:</strong> Typing Test</p>
         <p>
           <strong>Keystrokes Count:</strong> <span id="keystrokesCount">0</span>
         </p>
@@ -96,8 +107,18 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
           <strong>Pending Word Count:</strong>
           <span id="pendingWordCount">{{ passage|wordcount }}</span>
         </p>
+        {% if language == "hindi" %}
+    <label for="keyboardType">Select Keyboard Type:</label>
+<select id="keyboardType" class="form-select">
+    <option value="remington">Remington (Traditional)</option>
+    <option value="inscript">Inscript Keyboard (Unicode)</option>
+</select>
+
+
+    {% endif %}
       </div>
     </div>
+    
     {% endif %}
   </div>
 </div>
@@ -117,31 +138,29 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
 </form>
 
 
-
-   <script>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
-        
         let passageTextElement = document.getElementById("passageText");
         let userInputElement = document.getElementById("userInput");
     
         // ✅ Ensure passageText exists before proceeding
         let passageWordCount = parseInt("{{ passage|wordcount|default:'0' }}", 10);
-
+    
         let passageContainer = document.getElementById("passageContainer");
         let passageText = passageContainer ? passageContainer.getAttribute("data-passage").trim() : "";
-
     
         let startTime = null;
         let errors = 0;
         let backspaceCount = 0;
         let keystrokesCount = 0;
         let sessionId = "{{ session_id|default:'' }}";
+    
         function highlightText() {
             let passageTextElement = document.getElementById("passageText");
             let userInput = document.getElementById("userInput").value;
             
             if (!passageTextElement) return;
-        
+    
             let passageText = passageTextElement.textContent.trim();
             let highlightedText = "";
             
@@ -156,17 +175,15 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
                     highlightedText += passageText[i]; // ✅ Keep remaining text normal
                 }
             }
-        
+    
             passageTextElement.innerHTML = highlightedText; // ✅ Update text without removing the passage element
         }
-        
+    
         // ✅ Attach highlightText function to trackTyping()
         document.getElementById("userInput").addEventListener("input", function() {
             trackTyping(); // ✅ Keep existing function
             highlightText(); // ✅ Add word highlighting
         });
-        
-        
     
         window.trackTyping = function () {
             if (!startTime) startTime = new Date();
@@ -182,7 +199,8 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
             let typedWords = inputVal.split(/\s+/).filter(Boolean).length;
             let pendingWords = Math.max(0, passageWordCount - typedWords);
     
-            let isCPCT = "{{ exam_type }}" === "CPCT";
+            let isCPCT = "{{ exam_type }}" === "CPCT" || "{{ exam_type }}" === "PRACTISE";
+
     
             if (isCPCT) {
                 updateStat("errorCount", errors);
@@ -213,7 +231,7 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
         userInputElement.addEventListener("input", trackTyping);  // ✅ Ensure real-time updates
     
         // ✅ Timer Function (10 minutes countdown)
-        let timeLeft = 600;
+        let timeLeft = parseInt("{{ duration|default:'10' }}") * 60;
         function updateTimer() {
             let minutes = Math.floor(timeLeft / 60);
             let seconds = timeLeft % 60;
@@ -254,4 +272,5 @@ exam. Improve your WPM and accuracy.{% endblock %} {% block content %}
     });
     
 </script>
+
    {% endblock %}
