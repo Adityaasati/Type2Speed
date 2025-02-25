@@ -3,6 +3,8 @@ from .views import *
 
 urlpatterns = [
     path('', home_view, name="home"),
+    path('tips/', tips_view, name="tips"),
+    path('tests/', tests_view, name="tests"),
     path('instructions/<str:exam_type>/', instruction_view, name="exam-instructions"),
     path('typing-test/<str:exam_type>/', typing_test_view, name="typing-test"),
     path('typing-test/<str:exam_type>/<int:passage_id>/', typing_test_view, name="typing-test-exam-specific"),

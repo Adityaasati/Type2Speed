@@ -29,8 +29,21 @@ def home_view(request):
     return render(request, "typing_app/home.html", {"exams": exams, "column_size": column_size,"ads": ads})
 
 
+def tips_view(request):
+    return render(request, "typing_app/tips.html")
 
-
+def tests_view(request):
+    exams = [
+        {"name": "CHSL", "slug": "CHSL", "color": "primary"},
+        {"name": "CGL", "slug": "CGL", "color": "success"},
+        # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
+        {"name": "CPCT", "slug": "CPCT", "color": "danger"},
+        # {"name": "IBPS", "slug": "IBPS", "color": "info"},
+        # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
+    ]
+    exam_count = len(exams)
+    column_size = 12 // min(exam_count, 4)
+    return render(request, "typing_app/tests.html", {"exams": exams, "column_size": column_size})
 
 def instruction_view(request, exam_type):
     """ Displays instructions for a randomly selected passage from the selected exam type. """
@@ -381,7 +394,10 @@ def feedback_view(request):
             form.save()
             messages.success(request, "Thank you for your feedback!")
             return redirect('home')  # Redirect back to the home page
+        else:
+            print(form.errors)
     else:
+        print(request.method)
         form = FeedbackForm()
 
     return render(request, "typing_app/feedback.html", {"form": form})

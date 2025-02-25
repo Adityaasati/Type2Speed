@@ -1,0 +1,52 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Available Typing Tests - Type2Speed{% endblock %}
+{% block meta_description %}Explore and start practicing various typing tests including CHSL, CGL, and NTPC! Enhance your speed and accuracy today!{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">🎯 Available Typing Tests</h1>
+    <p class="lead">Select a typing test to start practicing and improve your typing skills!</p>
+</div>
+
+<!-- Tests Display Section -->
+<div class="container text-center">
+    <h2 class="mb-4">Choose Your Typing Test</h2>
+    <div class="row mt-4 justify-content-center g-4">  <!-- Added g-4 for tighter spacing -->
+        {% for exam in exams %}
+        <div class="col-md-4 col-sm-6 d-flex justify-content-center">
+            <a href="{% url 'exam-instructions' exam.slug %}" class="btn btn-outline-{{ exam.color }} btn-lg w-100">
+                {{ exam.name }} Typing Test
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Additional Styling for Adjusting Layout -->
+<!-- <style>
+    .hero-section {
+        background-color: #f8f9fa;
+    }
+    .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #343a40;
+    }
+    .btn-outline-primary, .btn-outline-success, .btn-outline-danger {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .btn-outline-primary:hover, .btn-outline-success:hover, .btn-outline-danger:hover {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+</style> -->
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Typing Tips and Tricks - Type2Speed{% endblock %}
+{% block meta_description %}Enhance your typing speed and accuracy with these essential tips, tricks, and guidelines for typing tests!{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">💡 Typing Tips & Tricks</h1>
+    <p class="lead">Boost your typing performance with these expert tips and techniques!</p>
+</div>
+
+<!-- Tips & Tricks Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Essential Tips for Typing Test Success</h2>
+
+    <!-- General Tips -->
+    <div class="mb-4">
+        <h4>📝 General Tips</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Practice regularly to improve both speed and accuracy.</li>
+            <li class="list-group-item">Focus on accuracy first, speed will follow.</li>
+            <li class="list-group-item">Use all fingers for typing to increase speed and reduce strain.</li>
+            <li class="list-group-item">Maintain proper posture with wrists straight and hands comfortably placed.</li>
+            <li class="list-group-item">Train yourself to type without looking at the keyboard.</li>
+        </ul>
+    </div>
+
+    <!-- Speed Tips -->
+    <div class="mb-4">
+        <h4>⚡ Speed Tips</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Type in short bursts followed by a short break to maintain focus.</li>
+            <li class="list-group-item">Use keyboard shortcuts (e.g., Ctrl + C, Ctrl + V) to save time.</li>
+            <li class="list-group-item">Gradually increase typing speed to push your limits.</li>
+        </ul>
+    </div>
+
+    <!-- Typing Test Tips -->
+    <div class="mb-4">
+        <h4>🖋️ Typing Test Tips</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Read through the text once to familiarize yourself before starting.</li>
+            <li class="list-group-item">Follow the key combinations specified in the instructions.</li>
+            <li class="list-group-item">Stick to the specified language and avoid switching input methods.</li>
+            <li class="list-group-item">Use the <strong>Tab key</strong> to start new paragraphs in some tests.</li>
+            <li class="list-group-item">Stay calm if you make a mistake—correct it and move forward!</li>
+        </ul>
+    </div>
+
+    <!-- Error Management Tips -->
+    <div class="mb-4">
+        <h4>❌ Error Management Tips</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Correct mistakes quickly without dwelling on them.</li>
+            <li class="list-group-item">Take advantage of the 5% error margin allowed in most tests.</li>
+            <li class="list-group-item">Be mindful that extra mistakes result in penalties!</li>
+        </ul>
+    </div>
+
+    <!-- Time Management Tips -->
+    <div class="mb-4">
+        <h4>⏰ Time Management Tips</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Pace yourself throughout the test. Don’t rush but keep an eye on the timer.</li>
+            <li class="list-group-item">Start typing at a comfortable speed, then gradually increase your pace as you go.</li>
+            <li class="list-group-item">Utilize the practice time to warm up before the actual test begins.</li>
+        </ul>
+    </div>
+
+    <!-- During Test Tips -->
+    <div class="mb-4">
+        <h4>🔑 During the Test</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Keep your focus and don’t let stress overwhelm you.</li>
+            <li class="list-group-item">If you finish early, double-check for any obvious mistakes.</li>
+            <li class="list-group-item">Avoid using backspace or deleting too much, as it slows you down.</li>
+        </ul>
+    </div>
+
+    <!-- Post-Test Evaluation -->
+    <div class="mb-4">
+        <h4>📊 Post-Test Evaluation</h4>
+        <ul class="list-group">
+            <li class="list-group-item">Review your mistakes and areas for improvement.</li>
+            <li class="list-group-item">Track your progress and set goals to continue improving.</li>
+        </ul>
+    </div>
+</div>
+
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="homepage-top" %}
+</div>
+
+{% endblock %}
