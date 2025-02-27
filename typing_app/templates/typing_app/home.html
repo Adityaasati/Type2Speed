@@ -1,18 +1,16 @@
-
-
 {% extends 'typing_app/base.html' %}
 
 {% block title %}Master Your Typing Skills - Type2Speed{% endblock %}
-{% block meta_description %}Take AI-powered typing tests and track your speed & accuracy. Free CHSL, CGL, and NTPC typing PRACTISE!{% endblock %}
+{% block meta_description %}Take AI-powered typing tests and track your speed & accuracy. Free CHSL, CGL, and NTPC typing PRACTICE!{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <div class="hero-section text-center py-5">
     <h1 class="display-4 fw-bold">🚀 Master Your Typing Skills</h1>
-    <p class="lead">Boost your speed & accuracy with AI-powered typing tests.</p>
+    <p class="lead">Boost your speed & accuracy with free typing tests.</p>
 
     <!-- Typing Test Start Button -->
-    <a href="{% url 'exam-instructions' 'PRACTISE' %}" class="btn btn-primary btn-lg mt-3">
+    <a href="{% url 'practise-instructions' 'PRACTISE' %}" class="btn btn-primary btn-lg mt-3">
         Start Typing Test Now 🔥
     </a>
 
@@ -26,21 +24,18 @@
     <p><span id="liveUsers">0</span> people typing right now!</p>
 </div> -->
 
-
+<!-- Exam Types Section -->
 <div class="container text-center">
     <div class="row mt-4 justify-content-center g-3">  <!-- Added g-3 for spacing -->
         {% for exam in exams %}
         <div class="col-md-{{ column_size }} col-sm-6 d-flex justify-content-center">
-            <a href="{% url 'exam-instructions' exam.slug %}" class="btn btn-outline-{{ exam.color }} btn-lg w-100">
+            <a href="{% url 'passages' exam.name %}" class="btn btn-outline-primary btn-lg w-100">
                 {{ exam.name }} Typing Test
             </a>
         </div>
         {% endfor %}
     </div>
 </div>
-
-
-
 
 <!-- Feedback/Suggestion Box -->
 <div class="container mt-5 pt-5">
@@ -59,9 +54,19 @@
     </form>
 </div>
 
-<!-- Ad Space -->
+<!-- Ad Space (Dynamic Ads) -->
 <div class="container text-center my-5">
-    {% include 'typing_app/ads.html' with position="homepage-top" %}
+    {% for ad in ads %}
+        <!-- Example of how ads might be displayed. Adjust as needed based on ad structure -->
+        <div class="ad-space mb-4">
+            <a href="{{ ad.link }}" target="_blank">
+                <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="img-fluid">
+            </a>
+        </div>
+    {% empty %}
+        <!-- If no ads are available, you can optionally display a placeholder message -->
+        <p>No ads available at the moment.</p>
+    {% endfor %}
 </div>
 
 <!-- Typing Animation Loader -->
@@ -85,6 +90,4 @@
 </style>
 
 <!-- Live Users Script -->
-
-
 {% endblock %}

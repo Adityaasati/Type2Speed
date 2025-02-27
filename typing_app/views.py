@@ -10,115 +10,219 @@ from .forms import FeedbackForm
 import time
 
 
+# def home_view(request):
+#     """Renders the homepage with dynamic exam options."""
+#     exams = [
+#         {"name": "CHSL", "slug": "CHSL", "color": "primary"},
+#         {"name": "CGL", "slug": "CGL", "color": "success"},
+#         # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
+#         {"name": "CPCT", "slug": "CPCT", "color": "danger"},
+#         # {"name": "IBPS", "slug": "IBPS", "color": "info"},
+#         # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
+#     ]
+
+#     # Calculate Bootstrap Grid Size
+#     exam_count = len(exams)
+#     column_size = 12 // min(exam_count, 4)  # Limits max column width to 4
+#     ads = AdPlacement.objects.filter(active=True)
+
+#     return render(request, "typing_app/home.html", {"exams": exams, "column_size": column_size,"ads": ads})
+
+
 def home_view(request):
-    """Renders the homepage with dynamic exam options."""
-    exams = [
-        {"name": "CHSL", "slug": "CHSL", "color": "primary"},
-        {"name": "CGL", "slug": "CGL", "color": "success"},
-        # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
-        {"name": "CPCT", "slug": "CPCT", "color": "danger"},
-        # {"name": "IBPS", "slug": "IBPS", "color": "info"},
-        # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
-    ]
-
-    # Calculate Bootstrap Grid Size
-    exam_count = len(exams)
-    column_size = 12 // min(exam_count, 4)  # Limits max column width to 4
+    exams = ExamType.objects.all()  # Fetch all exam types from the database
+    exam_count = exams.count()  # Get the number of exams
+    column_size = 12 // min(exam_count, 4)  # Dynamically calculate the column size
     ads = AdPlacement.objects.filter(active=True)
-
     return render(request, "typing_app/home.html", {"exams": exams, "column_size": column_size,"ads": ads})
+
 
 
 def tips_view(request):
     return render(request, "typing_app/tips.html")
 
+# def tests_view(request):
+#     exams = [
+#         {"name": "CHSL", "slug": "CHSL", "color": "primary"},
+#         {"name": "CGL", "slug": "CGL", "color": "success"},
+#         # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
+#         {"name": "CPCT", "slug": "CPCT", "color": "danger"},
+#         # {"name": "IBPS", "slug": "IBPS", "color": "info"},
+#         # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
+#     ]
+#     exam_count = len(exams)
+#     column_size = 12 // min(exam_count, 4)
+#     return render(request, "typing_app/tests.html", {"exams": exams, "column_size": column_size})
+
+
 def tests_view(request):
-    exams = [
-        {"name": "CHSL", "slug": "CHSL", "color": "primary"},
-        {"name": "CGL", "slug": "CGL", "color": "success"},
-        # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
-        {"name": "CPCT", "slug": "CPCT", "color": "danger"},
-        # {"name": "IBPS", "slug": "IBPS", "color": "info"},
-        # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
-    ]
-    exam_count = len(exams)
-    column_size = 12 // min(exam_count, 4)
+    exams = ExamType.objects.all()  # Fetch all exam types from the database
+    exam_count = exams.count()  # Get the number of exams
+    column_size = 12 // min(exam_count, 4)  # Dynamically calculate the column size
     return render(request, "typing_app/tests.html", {"exams": exams, "column_size": column_size})
 
-def instruction_view(request, exam_type):
-    """ Displays instructions for a randomly selected passage from the selected exam type. """
-    predefined_durations = [5, 10, 15, 20, 25, 30]
-    # ✅ Get all available passages for this exam
-    exam_contents = ExamContent.objects.filter(exam_types__name=exam_type)
 
-    if not exam_contents.exists():
+
+def passages_view(request, exam_type):
+    """Displays available passages for a selected exam type."""
+    predefined_durations = [5, 10, 15, 20, 25, 30]
+
+    try:
+        exam_type_obj = ExamType.objects.get(name=exam_type)
+    except ExamType.DoesNotExist:
+        return render(request, "typing_app/error.html", {
+            "message": f"No passages found for {exam_type}. Please contact support."
+        }, status=404)
+
+    if exam_type == "CPCT":
+        # ✅ Fetch separate lists of Hindi and English passages (max 10 each)
+        hindi_passages = ExamContent.objects.filter(
+            exam_types=exam_type_obj
+        ).exclude(passage_hindi__isnull=True).exclude(passage_hindi="")[:10]
+
+        english_passages = ExamContent.objects.filter(
+            exam_types=exam_type_obj
+        ).exclude(passage_english__isnull=True).exclude(passage_english="")[:10]
+
+        return render(request, "typing_app/passages.html", {
+            "exam_type": exam_type,
+            "hindi_passages": hindi_passages,  # ✅ Hindi on left side
+            "english_passages": english_passages,  # ✅ English on right side
+            "predefined_durations": predefined_durations
+        })
+
+    else:
+        # ✅ For non-CPCT exams, keep the existing logic
+        passages_data = ExamContent.objects.filter(exam_types=exam_type_obj)[:20]
+
+        return render(request, "typing_app/passages.html", {
+            "exam_type": exam_type,
+            "passages_data": passages_data,
+            "predefined_durations": predefined_durations
+        })
+
+
+def practise_instruction_view(request, exam_type):
+    """Displays instructions for the selected exam type."""
+    
+    # ✅ Get the exam type object and instructions
+    try:
+        exam_type_obj = ExamType.objects.get(name=exam_type)
+    except ExamType.DoesNotExist:
         return render(request, "typing_app/error.html", {
             "message": f"No instructions found for {exam_type}. Please contact support."
         }, status=404)
 
-    # ✅ Select a random passage every time
-    exam_content = random.choice(exam_contents)
+    # ✅ No need to fetch a passage here (it will be done in the typing test view)
+    predefined_durations = [5, 10, 15, 20, 25, 30]
 
-    return render(request, "typing_app/instructions.html", {
+    return render(request, "typing_app/practise_instructions.html", {
         "exam_type": exam_type,
-        "instructions": exam_content.instructions,
-        "passage_id": exam_content.id,  
-        "predefined_durations" : [5, 10, 15, 20, 25, 30]
-        
+        "instructions": exam_type_obj.instructions,  # ✅ Fetching from ExamType
+        "predefined_durations": predefined_durations,  # ✅ Allow user to select duration
     })
 
 
 
 
-def typing_test_view(request, exam_type, passage_id=None):
-    """ Fetches a passage dynamically if passage_id is not provided. """
-    predefined_durations = [5, 10, 15, 20, 25, 30]
+def instruction_view(request, exam_type, passage_id):
+    """Displays instructions for the selected exam type and passage."""
     language = request.GET.get("language", "english")
+    
 
-    # ✅ Get selected duration (default to 10 min)
-    selected_duration = int(request.GET.get("duration", 10))
-    if selected_duration not in predefined_durations:
-        selected_duration = 10
+    # ✅ Get the exam type object and instructions
+    try:
+        exam_type_obj = ExamType.objects.get(name=exam_type)
+    except ExamType.DoesNotExist:
+        return render(request, "typing_app/error.html", {
+            "message": f"No instructions found for {exam_type}. Please contact support."
+        }, status=404)
+
+    # ✅ Fetch selected passage by ID
+    try:
+        exam_content = ExamContent.objects.get(id=passage_id, exam_types=exam_type_obj)
+    except ExamContent.DoesNotExist:
+        return render(request, "typing_app/error.html", {
+            "message": f"Passage not found for {exam_type}. Please select again."
+        }, status=404)
+
+    return render(request, "typing_app/instructions.html", {
+        "exam_type": exam_type,
+        "instructions": exam_type_obj.instructions,  # ✅ Fetching from ExamType
+        "passage_id": passage_id,
+        "language":language
+        
+    })
+
+
+
+def typing_test_view(request, exam_type, passage_id=None, language="english"):
+    """ Fetches a passage dynamically if passage_id is not provided. """
+
     if passage_id:
+        # ✅ Get the passage using the provided ID
         exam_content = get_object_or_404(ExamContent, id=passage_id)
     else:
-        # Fetch a passage dynamically based on exam type
-        if exam_type == "CPCT":
+        # ✅ Fetch passages dynamically based on exam type
+        if exam_type == "PRACTISE":
+            language = request.GET.get("language", "english")  # ✅ Get language from URL
+            print("Language in practis",language)
+            selected_duration = int(request.GET.get("duration", 10))  # ✅ Get duration from URL
+            print(f"Fetching PRACTISE passages for {language} with {selected_duration} minutes")
+
+            # ✅ Filter by exam type, language, and duration
             if language == "english":
-                exam_contents = ExamContent.objects.exclude(passage_english__isnull=True).exclude(passage_english="").filter(exam_types__name=exam_type)
-            elif language == "hindi":
-                exam_contents = ExamContent.objects.exclude(passage_hindi__isnull=True).exclude(passage_hindi="").filter(exam_types__name=exam_type)
-            else:
-                print(f"Exam Type: {exam_type}, Language: {language}")
-                return render(request, "typing_app/error.html", {"message": "Invalid language selection for CPCT."}, status=400)
+                exam_contents = ExamContent.objects.filter(
+                    exam_types__name=exam_type,
+                    duration=selected_duration
+                ).exclude(passage_english__isnull=True).exclude(passage_english="")
+            else:  # Hindi case
+                exam_contents = ExamContent.objects.filter(
+                    exam_types__name=exam_type,
+                    duration=selected_duration
+                ).exclude(passage_hindi__isnull=True).exclude(passage_hindi="")
         else:
-            exam_contents = ExamContent.objects.exclude(passage__isnull=True).exclude(passage="").filter(exam_types__name=exam_type)
+            print(f"Fetching passages for {exam_type} (Using passage_english only)")
 
-        # If passages exist, select one randomly; otherwise, return an error.
+            # ✅ Fetch correct passages for CGL, CHSL, and all other exams (Only English)
+            exam_contents = ExamContent.objects.filter(
+                exam_types__name=exam_type
+            ).exclude(passage_english__isnull=True).exclude(passage_english="")
+
+        print(f"Total passages found: {exam_contents.count()} for {exam_type}")
+
+        # ✅ Select a passage randomly
         if exam_contents.exists():
-            exam_content = random.choice(exam_contents) if exam_contents.count() > 1 else exam_contents.first()
-            passage = exam_content.passage_hindi if language == "hindi" else exam_content.passage_english
-            
-
+            if exam_contents.count() > 1:
+                exam_content = random.choice(list(exam_contents))  # ✅ Ensure random.choice gets a list
+            else:
+                exam_content = exam_contents.first()
         else:
-            exam_contents = ExamContent.objects.exclude(passage__isnull=True).exclude(passage="").filter(exam_types__name=exam_type)
-            print(f"Total passages found: {exam_contents.count()} for {exam_type}")
-            return render(request, "typing_app/error.html", {"message": f"No passage found for {exam_type}. Please contact support."}, status=404)
+            print(f"⚠️ No passages found for PRACTISE - {language} - {selected_duration}")
+            return render(request, "typing_app/error.html", {
+                "message": f"No passage found for {exam_type} in {language} with {selected_duration} minutes."
+            }, status=404)
 
-    # Select the passage based on language
-    if exam_type == "CPCT":
-        passage = exam_content.passage_english if language == "english" else exam_content.passage_hindi
-        
+    if exam_type != "PRACTISE":
+        selected_duration = exam_content.duration  
+
+    # ✅ Select the passage text based on language
+    if language == "hindi":
+        passage = exam_content.passage_hindi
+        print("This is hindi")
+        print(passage)
     else:
-        passage = exam_content.passage
+        passage = exam_content.passage_english
 
     return render(request, "typing_app/typing_test.html", {
         "exam_type": exam_type,
         "passage": passage,
         "language": language,
-        "duration": selected_duration,
-        "predefined_durations": predefined_durations,
+        "duration": selected_duration,  # ✅ Pass correct duration from the passage
     })
+
+
+
 
 
 # Helper function to calculate WPM, accuracy, and handle mistakes
@@ -214,28 +318,7 @@ def calculate_ssc_view(passage, user_input, duration):
 
     # Calculate WPM, accuracy, and mistakes
     wpm, accuracy, mistakes, total_words_typed, actual_key_depressions = calculate_wpm_and_accuracy(typed_text, passage,duration)
-    # Save the test result (if you want to store it in the database)
-    # test_result = TestResult(
-    #     wpm=wpm,
-    #     accuracy=accuracy,
-    #     full_mistakes=mistakes['full'],
-    #     half_mistakes=mistakes['half'],
-    #     omissions=mistakes['omissions'],
-    #     substitutions=mistakes['substitutions'],
-    #     spelling_errors=mistakes['spelling_errors'],
-    #     repetitions=mistakes['repetitions'],
-    #     incomplete_words=mistakes['incomplete_words'],
-    #     additions=mistakes['additions'],
-    #     spacing=mistakes['spacing'],
-    #     capitalization=mistakes['capitalization'],
-    #     punctuation=mistakes['punctuation'],
-    #     total_words_typed=total_words_typed,
-    #     actual_key_depressions=actual_key_depressions,
-    #     time_taken=(time.time() - start_time)
-    # )
-    # test_result.save()
 
-    # Prepare data for rendering in the result.html page
     result = {
         'passage': passage,
         'typed_text': typed_text,
@@ -336,15 +419,7 @@ def test_result_view(request, exam_type):
         else:
             result = calculate_ssc_view(passage, user_input,duration)  # Default SSC method
 
-        # ✅ Save Test Result
-        # TestResult.objects.create(
-        #     exam_content=exam_content,
-        #     session_id=session_id,
-        #     wpm=0,  # CPCT does not need WPM
-        #     errors=result["errors"],
-        #     backspaces=backspaces,
-        #     spaces=spaces
-        # )
+      
         nwpm = result.get("net_wpm", 0)
         language = request.POST.get("language", "english") 
         scaled_score = calculate_scaled_score(nwpm,language, exam_type)
@@ -470,3 +545,9 @@ def submit_typing_game_result(request, game_name):
         return JsonResponse({"message": "Result saved!", "session_id": session_id})
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+def privacy_policy(request):
+    return render(request, 'typing_app/privacy_policy.html')
+
+def terms_and_conditions(request):
+    return render(request, 'typing_app/terms_and_conditions.html')

@@ -3,30 +3,38 @@ from django.core.management.base import BaseCommand
 from typing_app.models import ExamContent, ExamType
 
 class Command(BaseCommand):
-    help = "Bulk import passages from a CSV file."
-
-    def add_arguments(self, parser):
-        parser.add_argument('file_path', type=str, help="Path to the CSV file")
+    help = "Import passages from passages.csv into the database"
 
     def handle(self, *args, **kwargs):
-        file_path = kwargs['file_path']
-        with open(file_path, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
+        file_path = "passages.csv"  # Ensure file is in project root or provide full path
+
+        with open(file_path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            passages_to_create = []  # For bulk creation
+
             for row in reader:
-                passage_text = row['passage']
-                instructions = row['instructions']
-                duration = int(row['duration'])
-                exam_names = row['exam_types'].split(',')
+                exam_names = [name.strip() for name in row["exam_types"].split(",")]  # ✅ Handle multiple exams
+                duration = int(row.get("duration", 15))  # Default to 15 min if missing
 
-                # Get or create ExamType instances
-                exams = ExamType.objects.filter(name__in=exam_names)
-                
-                # Create ExamContent and link to exams
-                exam_content = ExamContent.objects.create(
-                    passage=passage_text,
-                    instructions=instructions,
-                    duration=duration
+                # ✅ Ensure all ExamType records exist
+                exam_objs = []
+                for exam_name in exam_names:
+                    exam_obj, created = ExamType.objects.get_or_create(name=exam_name)
+                    exam_objs.append(exam_obj)
+
+                # ✅ Create the passage with empty `passage` field
+                passage_obj = ExamContent(
+                    passage="",  # ✅ Keep passage empty as requested
+                    passage_english=row.get("passage_english", ""),
+                    passage_hindi=row.get("passage_hindi", ""),
+                    duration=duration,
                 )
-                exam_content.exam_types.set(exams)
+                passage_obj.save()  # Save first to get an ID before adding ManyToMany
 
-                self.stdout.write(self.style.SUCCESS(f"Added passage for {exam_names}"))
+                # ✅ Attach the ExamType(s)
+                passage_obj.exam_types.set(exam_objs)
+                passage_obj.save()
+
+                passages_to_create.append(passage_obj)
+
+        self.stdout.write(self.style.SUCCESS(f"✅ Successfully imported {len(passages_to_create)} passages!"))

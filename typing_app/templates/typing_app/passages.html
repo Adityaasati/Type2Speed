@@ -1,0 +1,75 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Select Passage - {{ exam_type }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">📜 Choose Your Passage</h1>
+    <p class="lead text-muted">Select a passage for {{ exam_type }} and proceed to the typing test.</p>
+</div>
+
+<!-- CPCT: Display Hindi & English Passages Side by Side -->
+{% if exam_type == "CPCT" %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Hindi Passages -->
+        <div class="col-md-6">
+            <h4 class="fw-bold text-center">📝 Hindi Passages</h4>
+            <div class="list-group">
+                {% for passage in hindi_passages %}
+                <a href="{% url 'instructions' exam_type=exam_type passage_id=passage.id %}?language=hindi"class="list-group-item list-group-item-action">
+                    Passage {{ forloop.counter }}
+                </a>
+                {% empty %}
+                <p class="text-muted text-center">🚫 No Hindi passages available.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- English Passages -->
+        <div class="col-md-6">
+            <h4 class="fw-bold text-center">📝 English Passages</h4>
+            <div class="list-group">
+                {% for passage in english_passages %}
+                <a href="{% url 'instructions' exam_type=exam_type passage_id=passage.id %}?language=english" class="list-group-item list-group-item-action">
+                    Passage {{ forloop.counter }}
+                </a>
+                {% empty %}
+                <p class="text-muted text-center">🚫 No English passages available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Other Exams: Normal Display -->
+{% else %}
+<div class="container mt-4">
+    {% if passages_data %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for passage in passages_data %}
+        <div class="col d-flex align-items-stretch">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Passage {{ forloop.counter }}</h5>
+                    <a href="{% url 'instructions' exam_type=exam_type passage_id=passage.id %}" class="btn btn-primary w-100">
+                        📖 Start Typing
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center mt-4 text-muted">🚫 No passages available for this exam. Please check back later.</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="below-passages" %}
+</div>
+
+{% endblock %}

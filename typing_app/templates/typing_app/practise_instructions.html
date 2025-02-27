@@ -8,6 +8,34 @@
     <p class="lead">Please read the instructions carefully before starting.</p>
 </div>
 
+<!-- Selection Bar - Language & Duration -->
+<div class="container text-center mb-4">
+    <div class="p-4 border rounded bg-light">
+        <form id="practiceForm">
+            <div class="row g-3"> 
+                <div class="col-md-6 d-flex flex-column">
+                    <label for="language" class="form-label fw-bold">🌍 Select Language:</label>
+                    <select id="language" name="language" class="form-select" onchange="updatePracticeLink()">
+                        <option value="english" {% if language == "english" %}selected{% endif %}>English</option>
+                        <option value="hindi" {% if language == "hindi" %}selected{% endif %}>Hindi</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 d-flex flex-column">
+                    <label for="duration" class="form-label fw-bold">⏳ Select Duration:</label>
+                    <select id="duration" name="duration" class="form-select" onchange="updatePracticeLink()">
+                        {% for time in predefined_durations %}
+                        <option value="{{ time }}" {% if time == duration %}selected{% endif %}>
+                            {{ time }} Minutes
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Instructions Section -->
 <div class="container text-center">
     <div class="bg-light p-4 border rounded text-start">
@@ -22,21 +50,18 @@
             {% endfor %}
         </ul>
     </div>
-    
-    <a href="{% url 'typing-test-exams' exam_type language passage_id %}" class="btn btn-primary btn-lg mt-4">
-        ✅ Proceed to Test ➡️
+
+    <!-- Proceed Button -->
+    <a id="practiceTestButton" href="{% url 'typing-test' exam_type %}?language=english&duration=5" class="btn btn-primary btn-lg mt-4">
+        ✅ Practice Test ➡️
     </a>
-
-
-
 </div>
-<!-- Proceed Button -->
-
 
 <!-- Ad Space -->
 <div class="container text-center my-5">
     {% include 'typing_app/ads.html' with position="below-instructions" %}
 </div>
+
 <script>
     function updatePracticeLink() {
         let selectedLanguage = document.getElementById("language").value;

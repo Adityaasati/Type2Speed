@@ -1,0 +1,88 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Terms and Conditions - Type2Speed{% endblock %}
+{% block meta_description %}Read the Terms and Conditions of Type2Speed to understand the rules and guidelines while using our platform and services. {% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">📜 Terms and Conditions</h1>
+    <p class="lead">By using Type2Speed, you agree to comply with our Terms and Conditions.</p>
+</div>
+
+<!-- Terms and Conditions Content -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+            <div class="terms-content p-4 bg-light rounded shadow-sm">
+                <h3><strong>Effective Date: 23/02/2025</strong></h3>
+                <p>Welcome to <strong>Type2Speed</strong>! By accessing or using our website and services, you agree to comply with and be bound by the following Terms and Conditions ("Terms"). If you do not agree with these Terms, please do not use our Site.</p>
+
+                <h3><strong>1. Acceptance of Terms</strong></h3>
+                <p>By using the <strong>Type2Speed</strong> website (referred to as "the Site" or "We"), you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions, as well as our <a href="{% url 'privacy-policy' %}">Privacy Policy</a>.</p>
+
+                <h3><strong>2. Services Provided</strong></h3>
+                <p><strong>Type2Speed</strong> provides typing test services, including but not limited to:</p>
+                <ul>
+                    <li>Typing tests (CHSL, CGL, NTPC, etc.)</li>
+                    <li>Typing speed and accuracy tracking</li>
+                    <li>Exam instructions and practice</li>
+                    <li>Typing feedback and reports</li>
+                </ul>
+
+                <h3><strong>3. Account Registration</strong></h3>
+                <p>To access certain features of the Site, you may be required to create an account by providing personal information, including a valid email address. You agree to:</p>
+                <ul>
+                    <li>Provide accurate and complete information during registration.</li>
+                    <li>Keep your account information up to date and secure.</li>
+                    <li>Notify us immediately of any unauthorized use of your account.</li>
+                </ul>
+                <p>You are responsible for all activities that occur under your account.</p>
+
+                <h3><strong>4. Use of the Site</strong></h3>
+                <p>You agree to use the Site and its services only for lawful purposes. You shall not:</p>
+                <ul>
+                    <li>Violate any applicable law or regulation.</li>
+                    <li>Impersonate any person or entity, or falsely state or misrepresent your affiliation with any person or entity.</li>
+                    <li>Interfere with or disrupt the operation of the Site or servers.</li>
+                    <li>Engage in any behavior that could harm the experience of other users or the performance of the Site.</li>
+                </ul>
+
+                <h3><strong>5. User-Generated Content</strong></h3>
+                <p>Any content or information that you upload or submit on the Site, including but not limited to feedback, suggestions, or comments, shall remain your property. However, by submitting content, you grant <strong>Type2Speed</strong> a perpetual, irrevocable, royalty-free license to use, display, and distribute such content for the purposes of improving the Site and its services.</p>
+                <p>You are solely responsible for the content you submit. <strong>Type2Speed</strong> reserves the right to remove any content that is deemed inappropriate, offensive, or violates the Terms.</p>
+
+                <h3><strong>6. Typographic Test Results</strong></h3>
+                <ul>
+                    <li><strong>Test Results:</strong> The typing test results, including but not limited to words per minute (WPM), accuracy, and overall performance, are provided solely for personal use and to track your progress.</li>
+                    <li><strong>Accuracy:</strong> Typing test results may vary based on the test conditions, such as the type of device, keyboard, or environment.</li>
+                    <li><strong>No Guarantees:</strong> <strong>Type2Speed</strong> makes no guarantees about your typing speed or performance in any official exams or competitions.</li>
+                </ul>
+
+                <h3><strong>7. Prohibited Activities</strong></h3>
+                <p>You are prohibited from:</p>
+                <ul>
+                    <li>Using automated tools or bots to access or scrape content from the Site.</li>
+                    <li>Engaging in any fraudulent activity or attempting to manipulate test results.</li>
+                    <li>Distributing viruses, malware, or other harmful software through the Site.</li>
+                </ul>
+
+                <h3><strong>8. Termination of Access</strong></h3>
+                <p>We reserve the right to suspend or terminate your access to the Site at our sole discretion, without notice, for any violation of these Terms or any unlawful or inappropriate conduct.</p>
+
+                <h3><strong>9. Privacy and Data Protection</strong></h3>
+                <p>Your use of the Site is governed by our <a href="{% url 'privacy-policy' %}">Privacy Policy</a>, which outlines how we collect, use, and protect your personal information. By using the Site, you consent to the practices described in the Privacy Policy.</p>
+
+                <h3><strong>10. Intellectual Property</strong></h3>
+                <p>All content on the Site, including text, graphics, logos, trademarks, and software, is the property of <strong>Type2Speed</strong> or its licensors and is protected by intellectual property laws. You may not use, copy, or distribute any part of the Site's content without prior written permission, except as expressly permitted by these Terms.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="homepage-bottom" %}
+</div>
+
+{% endblock %}

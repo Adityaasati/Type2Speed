@@ -104,7 +104,17 @@
     {% if exam_type == "CPCT" or exam_type == "PRACTISE" %}
     <div class="col-md-4">
       <div class="stats-box p-3 border rounded bg-light">
+        {% if language == "hindi" %}
+        <label for="keyboardType">Select Keyboard Type:</label>
+        <select id="keyboardType" class="form-select">
+            <option value="remington">Remington (Traditional)</option>
+            <option value="inscript">Inscript Keyboard (Unicode)</option>
+        </select>
+        <br>
+        <br>
+        {% endif %}
         <h5 class="fw-bold text-center">📊 Typing Stats</h5>
+        <br>
         <p><strong>You are viewing:</strong> Typing Test</p>
         <p>
           <strong>Keystrokes Count:</strong> <span id="keystrokesCount">0</span>
@@ -124,13 +134,7 @@
           <strong>Pending Word Count:</strong>
           <span id="pendingWordCount">{{ passage|wordcount }}</span>
         </p>
-        {% if language == "hindi" %}
-        <label for="keyboardType">Select Keyboard Type:</label>
-        <select id="keyboardType" class="form-select">
-            <option value="remington">Remington (Traditional)</option>
-            <option value="inscript">Inscript Keyboard (Unicode)</option>
-        </select>
-        {% endif %}
+        
       </div>
     </div>
     {% endif %}

@@ -16,28 +16,43 @@ class ExamContentAdmin(admin.ModelAdmin):
     get_exam_types.short_description = "Exam Types"  # ✅ Fix field name in admin panel
 
     def has_english(self, obj):
-        """Check if an English passage exists."""
-        return bool(obj.passage_english)
+        """Check if an English passage exists and prevent false positives."""
+        if obj.passage_english is None or obj.passage_english.strip().lower() == "none" or obj.passage_english.strip() == "":
+            return False
+        return True
+
     has_english.boolean = True
     has_english.short_description = "English Available"
 
     def has_hindi(self, obj):
-        """Check if a Hindi passage exists."""
-        return bool(obj.passage_hindi)
+        """Check if a Hindi passage exists and prevent false positives."""
+        if obj.passage_hindi is None or obj.passage_hindi.strip().lower() == "none" or obj.passage_hindi.strip() == "":
+            return False
+        return True
+
     has_hindi.boolean = True
     has_hindi.short_description = "Hindi Available"
 
+
+
 @admin.register(ExamType)
 class ExamTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')  # ✅ Show ID and Exam Type name
-    search_fields = ('name',)  # ✅ Allow searching by exam name
-    ordering = ('name',)  # ✅ Sort alphabetically
+    list_display = ('id', 'name', 'instructions_preview')  # ✅ Show ID, Exam Name, and Instructions
+    search_fields = ('name',)  # ✅ Search by Exam Name
+    ordering = ('name',)
 
-@admin.register(TestResult)
-class TestResultAdmin(admin.ModelAdmin):
-    list_display = ('exam_content', 'wpm', 'accuracy', 'errors', 'test_date')
-    search_fields = ('exam_content__exam_type', 'session_id')
-    ordering = ('-test_date',)
+    def instructions_preview(self, obj):
+        """Show first few lines of instructions in Admin Panel."""
+        return obj.instructions[:50] + "..." if obj.instructions else "No instructions found"
+
+    instructions_preview.short_description = "Instructions"
+
+
+# @admin.register(TestResult)
+# class TestResultAdmin(admin.ModelAdmin):
+#     list_display = ('exam_content', 'session_id')
+#     search_fields = ('exam_content__exam_type', 'session_id')
+    # ordering = ('-test_date',)
 
 @admin.register(AdPlacement)
 class AdPlacementAdmin(admin.ModelAdmin):

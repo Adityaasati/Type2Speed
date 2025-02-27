@@ -11,18 +11,35 @@
 </div>
 
 <!-- Tests Display Section -->
-<div class="container text-center">
+<!-- <div class="container text-center">
     <h2 class="mb-4">Choose Your Typing Test</h2>
-    <div class="row mt-4 justify-content-center g-4">  <!-- Added g-4 for tighter spacing -->
+    <div class="row mt-4 justify-content-center g-4">  
         {% for exam in exams %}
         <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-            <a href="{% url 'exam-instructions' exam.slug %}" class="btn btn-outline-{{ exam.color }} btn-lg w-100">
+            <a href="{% url 'passages' exam.slug %}" class="btn btn-outline-{{ exam.color }} btn-lg w-100">
+                {{ exam.name }} Typing Test
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div> -->
+<div class="container text-center">
+    <div class="row mt-4 justify-content-center g-3">
+        {% for exam in exams %}
+        <div class="col-md-{{ column_size }} col-sm-6 d-flex justify-content-center">
+            <a href="{% url 'passages' exam.name %}" class="btn btn-outline-primary btn-lg w-100">
                 {{ exam.name }} Typing Test
             </a>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="tests-page" %}
+</div>
+
 
 <!-- Additional Styling for Adjusting Layout -->
 <!-- <style>
