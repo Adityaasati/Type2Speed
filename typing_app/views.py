@@ -30,29 +30,27 @@ import time
 
 
 def home_view(request):
+    color_map = {
+    "CHSL": "primary",
+    "CGL": "success",
+    "CPCT": "danger",
+    "PRACTISE": "info",
+    "NTPC": "secondary",
+
+}
     exams = ExamType.objects.all()  # Fetch all exam types from the database
+    for exam in exams:
+        exam.color = color_map.get(exam.name, "secondary") 
     exam_count = exams.count()  # Get the number of exams
     column_size = 12 // min(exam_count, 4)  # Dynamically calculate the column size
     ads = AdPlacement.objects.filter(active=True)
+    
     return render(request, "typing_app/home.html", {"exams": exams, "column_size": column_size,"ads": ads})
-
+ 
 
 
 def tips_view(request):
     return render(request, "typing_app/tips.html")
-
-# def tests_view(request):
-#     exams = [
-#         {"name": "CHSL", "slug": "CHSL", "color": "primary"},
-#         {"name": "CGL", "slug": "CGL", "color": "success"},
-#         # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
-#         {"name": "CPCT", "slug": "CPCT", "color": "danger"},
-#         # {"name": "IBPS", "slug": "IBPS", "color": "info"},
-#         # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
-#     ]
-#     exam_count = len(exams)
-#     column_size = 12 // min(exam_count, 4)
-#     return render(request, "typing_app/tests.html", {"exams": exams, "column_size": column_size})
 
 
 def tests_view(request):
