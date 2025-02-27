@@ -164,9 +164,7 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
         # ✅ Fetch passages dynamically based on exam type
         if exam_type == "PRACTISE":
             language = request.GET.get("language", "english")  # ✅ Get language from URL
-            print("Language in practis",language)
             selected_duration = int(request.GET.get("duration", 10))  # ✅ Get duration from URL
-            print(f"Fetching PRACTISE passages for {language} with {selected_duration} minutes")
 
             # ✅ Filter by exam type, language, and duration
             if language == "english":
@@ -180,14 +178,12 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
                     duration=selected_duration
                 ).exclude(passage_hindi__isnull=True).exclude(passage_hindi="")
         else:
-            print(f"Fetching passages for {exam_type} (Using passage_english only)")
 
             # ✅ Fetch correct passages for CGL, CHSL, and all other exams (Only English)
             exam_contents = ExamContent.objects.filter(
                 exam_types__name=exam_type
             ).exclude(passage_english__isnull=True).exclude(passage_english="")
 
-        print(f"Total passages found: {exam_contents.count()} for {exam_type}")
 
         # ✅ Select a passage randomly
         if exam_contents.exists():
@@ -196,7 +192,6 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
             else:
                 exam_content = exam_contents.first()
         else:
-            print(f"⚠️ No passages found for PRACTISE - {language} - {selected_duration}")
             return render(request, "typing_app/error.html", {
                 "message": f"No passage found for {exam_type} in {language} with {selected_duration} minutes."
             }, status=404)
@@ -207,8 +202,6 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
     # ✅ Select the passage text based on language
     if language == "hindi":
         passage = exam_content.passage_hindi
-        print("This is hindi")
-        print(passage)
     else:
         passage = exam_content.passage_english
 
@@ -387,17 +380,14 @@ def calculate_scaled_score(nwpm, exam_type, language):
 
 def test_result_view(request, exam_type):
     """Applies different typing test rules based on the exam type."""
-    print(exam_type, request.method)
     
     if request.method == "POST":
         passage_id = request.POST.get('passage_id')
-        print(exam_type, passage_id)
         if passage_id:
             exam_content = get_object_or_404(ExamContent, id=passage_id)
         else:
             exam_contents = ExamContent.objects.filter(exam_types__name=exam_type)
             if not exam_contents.exists():
-                print("No passage found for {exam_type}. Please contact support.")
                 return render(request, "typing_app/error.html", {
                     "message": f"No passage found for {exam_type}. Please contact support."
                 }, status=404)
