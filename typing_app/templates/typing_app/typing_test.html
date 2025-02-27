@@ -101,7 +101,7 @@
       </button>
     </div>
 
-    {% if exam_type == "CPCT" or exam_type == "PRACTISE" %}
+    {% if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type == "NTPC" %}
     <div class="col-md-4">
       <div class="stats-box p-3 border rounded bg-light">
         {% if language == "hindi" %}
@@ -216,7 +216,7 @@
             let typedWords = inputVal.split(/\s+/).filter(Boolean).length;
             let pendingWords = Math.max(0, passageWordCount - typedWords);
     
-            let isCPCT = "{{ exam_type }}" === "CPCT" || "{{ exam_type }}" === "PRACTISE";
+            let isCPCT = "{{ exam_type }}" === "CPCT" || "{{ exam_type }}" === "PRACTISE" || "{{ exam_type }}" === "NTPC";
     
             if (isCPCT) {
                 updateStat("errorCount", errors);

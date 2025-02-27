@@ -344,7 +344,7 @@ def calculate_ssc_view(passage, user_input, duration):
 
 # Main View for Calculating SSC Exam (CGL/CHSL)
 
-def calculate_cpct_metrics(passage, user_input, duration):
+def calculate_all_metrics(passage, user_input, duration):
     """Minimal CPCT calculations with only essential metrics."""
     passage_words = passage.split()
     user_words = user_input.split()
@@ -387,9 +387,11 @@ def calculate_scaled_score(nwpm, exam_type, language):
 
 def test_result_view(request, exam_type):
     """Applies different typing test rules based on the exam type."""
+    print(exam_type, request.method)
+    
     if request.method == "POST":
         passage_id = request.POST.get('passage_id')
-
+        print(exam_type, passage_id)
         if passage_id:
             exam_content = get_object_or_404(ExamContent, id=passage_id)
         else:
@@ -412,8 +414,8 @@ def test_result_view(request, exam_type):
         duration = exam_content.duration
 
         # ✅ Minimal Calculation for CPCT
-        if exam_type == "CPCT" or exam_type == "PRACTISE":
-            result = calculate_cpct_metrics(passage, user_input,duration)
+        if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type == "NTPC":
+            result = calculate_all_metrics(passage, user_input,duration)
         else:
             result = calculate_ssc_view(passage, user_input,duration)  # Default SSC method
 
@@ -422,7 +424,7 @@ def test_result_view(request, exam_type):
         language = request.POST.get("language", "english") 
         scaled_score = calculate_scaled_score(nwpm,language, exam_type)
         
-        if exam_type == "CPCT" or exam_type =="PRACTICE":
+        if exam_type == "CPCT" or exam_type =="PRACTICE" or exam_type =="NTPC":
 
             return render(request, "typing_app/result.html", {
                 "exam_type": exam_type,

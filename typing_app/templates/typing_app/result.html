@@ -8,7 +8,7 @@
         <h2 class="fw-bold mb-3">🏆 {{ exam_type }} Typing Test Results</h2>
         <p>Your results have been calculated based on your typed passage. Here’s how you performed:</p>
     </div>
-    {% if exam_type == "CPCT" %}
+    {% if exam_type == "CPCT"  %}
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="stats-box p-4 border rounded bg-light shadow-sm">
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    
+   
     <div class="mt-4">
         <h4 class="text-center fw-bold">📜 Certification Scaling Information</h4>
         <p class="text-center">
@@ -76,7 +76,24 @@
             </table>
         </div>
     </div>
- 
+    
+    {% elif exam_type == "NTPC" %}
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="stats-box p-4 border rounded bg-light shadow-sm">
+                <h5 class="fw-bold text-center">📊 Typing Stats</h5>
+                <hr>
+                <p><strong>📊 Net Words Per Minute (NWPM):</strong> <span class="text-primary">{{ net_wpm }}</span></p>
+                <p><strong>⌨ Keystrokes Count:</strong> {{ keystrokes_count }}</p>
+                <p><strong>❌ Error Count:</strong> {{ errors }}</p>
+                <p><strong>⌨ Backspace Count:</strong> {{ backspaces }}</p>
+                <p><strong>📖 Total Word Count:</strong> {{ total_word_count }}</p>
+                <p><strong>✍ Typed Word Count:</strong> {{ typed_word_count }}</p>
+                <p><strong>🕑 Pending Word Count:</strong> {{ pending_word_count }}</p>
+                <p><strong>🎯 Scaled Score:</strong> <span class="text-success">{{ scaled_score }}%</span></p>
+            </div>
+        </div>
+    </div>
 
     {% elif exam_type == "CGL" or exam_type == "CHSL" %}
     <div class="row justify-content-center">
