@@ -161,3 +161,42 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+log_directory = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        # File handler for Django errors (both local and production)
+        'file': {
+            'level': 'ERROR',  # Capture errors and higher
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(log_directory, 'django_error.log'),  # Path for logs
+        },
+        # Console handler for local development (optional)
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        # Django logger
+        'django': {
+            'handlers': ['file', 'console'],  # Both file and console for easier debugging
+            'level': 'ERROR',  # Capture errors and above
+            'propagate': True,
+        },
+        # Log for Gunicorn errors (if used)
+        'gunicorn.error': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
