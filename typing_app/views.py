@@ -399,7 +399,11 @@ def test_result_view(request, exam_type):
         spaces = int(request.POST.get('spaces', 0))
 
         # ✅ Normalize Text (Remove Extra Spaces)
-        passage = re.sub(r'\s+', ' ', exam_content.passage.strip())
+        if request.POST.get("language") == "hindi":
+            passage = re.sub(r'\s+', ' ', exam_content.passage_hindi.strip())  # Use passage_hindi
+        else:
+            passage = re.sub(r'\s+', ' ', exam_content.passage_english.strip())  # Use passage_english
+        
         user_input = re.sub(r'\s+', ' ', user_input)
         duration = exam_content.duration
 

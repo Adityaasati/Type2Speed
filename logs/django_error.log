@@ -20,3 +20,14 @@ Traceback (most recent call last):
                   ~~~^^~~~~~~~~~~~~~~~~~~~
 ZeroDivisionError: integer division or modulo by zero
 "GET / HTTP/1.1" 500 74111
+Internal Server Error: /test-result/CPCT/
+Traceback (most recent call last):
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\asati\OneDrive\Desktop\Live Projects\Type2Test\Type2Speed\typing_app\views.py", line 402, in test_result_view
+    passage = re.sub(r'\s+', ' ', exam_content.passage.strip())
+                                  ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ExamContent' object has no attribute 'passage'
+"POST /test-result/CPCT/ HTTP/1.1" 500 78494
