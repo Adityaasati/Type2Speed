@@ -1,0 +1,22 @@
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\asati\OneDrive\Desktop\Live Projects\Type2Test\Type2Speed\typing_app\views.py", line 45, in home_view
+    column_size = 12 // min(exam_count, 4)  # Dynamically calculate the column size
+                  ~~~^^~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+"GET / HTTP/1.1" 500 74260
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\asati\OneDrive\Desktop\Live Projects\Type2Test\Type2Speed\typing_app\views.py", line 45, in home_view
+    column_size = 12 // min(exam_count, 4)  # Dynamically calculate the column size
+                  ~~~^^~~~~~~~~~~~~~~~~~~~
+ZeroDivisionError: integer division or modulo by zero
+"GET / HTTP/1.1" 500 74111

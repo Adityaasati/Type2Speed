@@ -12,11 +12,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-# import environ
+from decouple import config
 
-# # Initialise environment variables
-# env = environ.Env()
-# environ.Env.read_env()  # This reads the .env file
+# Secret key for Django (use a secure key)
+# SECRET_KEY = config('SECRET_KEY')
+
+# Set DEBUG flag (True for local development, False for production)
+DEBUG = config('DEBUG', cast=bool)
+
 
 # # Set DEBUG based on the environment variable
 # DEBUG = env.bool("DEBUG", default=True) 
@@ -31,7 +34,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6qjf&&25x0#orvqj&bev2jw9nu_6-!k*saw2g6pzj&9732&j0u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# DEBUG = config('DEBUG', cast=bool)
+
 
 
 ALLOWED_HOSTS = ['139.59.38.231','127.0.0.1','localhost','type2speed.com']
@@ -87,10 +91,34 @@ WSGI_APPLICATION = 'type2speed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+# DATABASES = {
+#       'default': {
+#           'ENGINE': 'django.db.backends.postgresql',
+#           'NAME': 'type2speed_local',
+#           'USER': 'postgres',
+#           'PASSWORD': 'Aditya@7024',
+#           'HOST': 'localhost',
+#           'PORT': '5432',
+#       }
+#   }
+
+# DATABASES = {
+#     'default': config('DATABASE_URL', cast=str)  # This will parse the DATABASE_URL from .env
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",  # Uncomment if you're using Postgres
+        "NAME": config('DB_NAME'),  # Database name
+        "USER": config('DB_USER'),  # Database username
+        "PASSWORD": config('DB_PASSWORD'),  # Database password
+        "HOST": config('DB_HOST'),  # Database host (localhost or IP)
+        "PORT": config('DB_PORT', default='5432'),  # Optional: PostgreSQL default port is 5432
     }
 }
 

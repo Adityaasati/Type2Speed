@@ -6,7 +6,7 @@ class ExamContent(models.Model):
     """Stores typing test passages for multiple exams."""
     
     exam_types = models.ManyToManyField('ExamType', related_name="exam_contents")  # ✅ Many-to-Many Relationship
-    passage = models.TextField(help_text="Typing passage for the test", blank=True)
+    # passage = models.TextField(help_text="Typing passage for the test", blank=True)
     passage_english = models.TextField(blank=True, null=True)  # English passage (CPCT)
     passage_hindi = models.TextField(blank=True, null=True)
     duration = models.IntegerField(default=15, help_text="Duration in minutes")  # ✅ Custom duration
