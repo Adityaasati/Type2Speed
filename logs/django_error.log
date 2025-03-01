@@ -31,3 +31,17 @@ Traceback (most recent call last):
                                   ^^^^^^^^^^^^^^^^^^^^
 AttributeError: 'ExamContent' object has no attribute 'passage'
 "POST /test-result/CPCT/ HTTP/1.1" 500 78494
+"GET /typing-test/PRACTISE/english/127/ HTTP/1.1" 500 77277
+"GET /typing-test/PRACTISE/english/127/ HTTP/1.1" 500 77277
+"GET /typing-test/PRACTISE/english/127/ HTTP/1.1" 500 77277
+Internal Server Error: /test-result/CPCT/
+Traceback (most recent call last):
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\asati\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\asati\OneDrive\Desktop\Live Projects\Type2Test\Type2Speed\typing_app\views.py", line 408, in test_result_view
+    passage = re.sub(r'\s+', ' ', exam_content.passage_english.strip())  # Use passage_english
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+"POST /test-result/CPCT/ HTTP/1.1" 500 78534

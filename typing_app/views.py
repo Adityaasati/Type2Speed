@@ -9,26 +9,6 @@ from .models import *
 from .forms import FeedbackForm
 import time
 
-
-# def home_view(request):
-#     """Renders the homepage with dynamic exam options."""
-#     exams = [
-#         {"name": "CHSL", "slug": "CHSL", "color": "primary"},
-#         {"name": "CGL", "slug": "CGL", "color": "success"},
-#         # {"name": "NTPC", "slug": "NTPC", "color": "warning"},
-#         {"name": "CPCT", "slug": "CPCT", "color": "danger"},
-#         # {"name": "IBPS", "slug": "IBPS", "color": "info"},
-#         # {"name": "SSC Steno", "slug": "SSC-Steno", "color": "secondary"}
-#     ]
-
-#     # Calculate Bootstrap Grid Size
-#     exam_count = len(exams)
-#     column_size = 12 // min(exam_count, 4)  # Limits max column width to 4
-#     ads = AdPlacement.objects.filter(active=True)
-
-#     return render(request, "typing_app/home.html", {"exams": exams, "column_size": column_size,"ads": ads})
-
-
 def home_view(request):
     color_map = {
     "CHSL": "primary",
@@ -39,6 +19,7 @@ def home_view(request):
 
 }
     exams = ExamType.objects.all()  # Fetch all exam types from the database
+    exams = exams.exclude(name="PRACTISE")
     for exam in exams:
         exam.color = color_map.get(exam.name, "secondary") 
     exam_count = exams.count()  # Get the number of exams
@@ -55,6 +36,7 @@ def tips_view(request):
 
 def tests_view(request):
     exams = ExamType.objects.all()  # Fetch all exam types from the database
+    exams = exams.exclude(name="PRACTISE")
     exam_count = exams.count()  # Get the number of exams
     column_size = 12 // min(exam_count, 4)  # Dynamically calculate the column size
     return render(request, "typing_app/tests.html", {"exams": exams, "column_size": column_size})
@@ -164,7 +146,7 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
         # ✅ Fetch passages dynamically based on exam type
         if exam_type == "PRACTISE":
             language = request.GET.get("language", "english")  # ✅ Get language from URL
-            selected_duration = int(request.GET.get("duration", 10))  # ✅ Get duration from URL
+            selected_duration = int(request.GET.get("duration", 10))  
 
             # ✅ Filter by exam type, language, and duration
             if language == "english":
@@ -398,11 +380,15 @@ def test_result_view(request, exam_type):
         backspaces = int(request.POST.get('backspaces', 0))
         spaces = int(request.POST.get('spaces', 0))
 
-        # ✅ Normalize Text (Remove Extra Spaces)
+    
+            
         if request.POST.get("language") == "hindi":
-            passage = re.sub(r'\s+', ' ', exam_content.passage_hindi.strip())  # Use passage_hindi
+            passage = exam_content.passage_hindi.strip() if exam_content.passage_hindi else ""  # Use passage_hindi for Hindi
         else:
-            passage = re.sub(r'\s+', ' ', exam_content.passage_english.strip())  # Use passage_english
+            passage = exam_content.passage_english.strip() if exam_content.passage_english else ""  # Use passage_english for English
+
+        # Normalize the text (Remove extra spaces)
+        passage = re.sub(r'\s+', ' ', passage)
         
         user_input = re.sub(r'\s+', ' ', user_input)
         duration = exam_content.duration
