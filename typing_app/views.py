@@ -8,6 +8,8 @@ from difflib import SequenceMatcher
 from .models import *
 from .forms import FeedbackForm
 import time
+from django.http import HttpResponse
+
 
 def home_view(request):
     color_map = {
@@ -531,3 +533,14 @@ def privacy_policy(request):
 
 def terms_and_conditions(request):
     return render(request, 'typing_app/terms_and_conditions.html')
+
+
+
+
+
+def ads_get(request, *args, **kwargs):
+    line  =  "google.com, pub-7684260029366134, DIRECT, f08c47fec0942fa0"
+    return HttpResponse(line)
+
+
+

@@ -1,5 +1,14 @@
 from django.urls import path
 from .views import *
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import StaticViewSitemap, DynamicPagesSitemap, AdsSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'dynamic': DynamicPagesSitemap,
+    'ads': AdsSitemap,
+}
+
 
 urlpatterns = [
     path('', home_view, name="home"),
@@ -18,11 +27,12 @@ urlpatterns = [
     path("games/<str:game_name>/submit/", submit_typing_game_result, name="submit-typing-game"),
     path('privacy-policy/', privacy_policy, name='privacy-policy'),
     path('terms-and-conditions/', terms_and_conditions, name='terms-and-conditions'),
+    path('ads.txt/', ads_get, name='ads-get'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}), 
+    
     
     
 ]
-
-
 
 
 
