@@ -14,27 +14,17 @@ from pathlib import Path
 import os
 from decouple import config
 
-# Secret key for Django (use a secure key)
-# SECRET_KEY = config('SECRET_KEY')
 
-# Set DEBUG flag (True for local development, False for production)
 DEBUG = config('DEBUG', cast=bool)
 
 
-# # Set DEBUG based on the environment variable
-# DEBUG = env.bool("DEBUG", default=True) 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-6qjf&&25x0#orvqj&bev2jw9nu_6-!k*saw2g6pzj&9732&j0u'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = config('DEBUG', cast=bool)
 
 
 
@@ -88,29 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'type2speed.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-# DATABASES = {
-#       'default': {
-#           'ENGINE': 'django.db.backends.postgresql',
-#           'NAME': 'type2speed_local',
-#           'USER': 'postgres',
-#           'PASSWORD': 'Aditya@7024',
-#           'HOST': 'localhost',
-#           'PORT': '5432',
-#       }
-#   }
-
-# DATABASES = {
-#     'default': config('DATABASE_URL', cast=str)  # This will parse the DATABASE_URL from .env
-# }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",  # Uncomment if you're using Postgres
