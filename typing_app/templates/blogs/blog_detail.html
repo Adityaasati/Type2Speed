@@ -56,4 +56,30 @@
     </div>
 </div>
 
+<!-- Corrected Schema Markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ blog.title }}",
+  "description": "{{ blog.excerpt }}",
+  "image": "{{ blog.featured_image.url }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ blog.author.name }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Type2Speed",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.type2speed.com/static/images/logo.png"
+    }
+  },
+  "datePublished": "{{ blog.published_date|date:'Y-m-d' }}",
+  "dateModified": "{{ blog.updated_date|date:'Y-m-d' }}",
+  "mainEntityOfPage": "{{ request.build_absolute_uri }}"
+}
+</script>
+
 {% endblock %}
