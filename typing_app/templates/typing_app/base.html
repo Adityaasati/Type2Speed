@@ -29,7 +29,7 @@
           "@type": "WebPage",
           "url": "https://www.type2speed.com",
           "name": "Type2Speed - Typing Test Platform for Government Exams",
-          "description": "Type2Speed offers typing tests and practice tools to help you improve your typing speed and accuracy for Government exams like CHSL, CGL, NTPC.",
+          "description": "Type2Speed offers typing tests and practice tools to help you improve your typing speed and accuracy for Government exams like CHSL, CGL, NTPC, CPCT.",
           "publisher": {
             "@type": "Organization",
             "name": "Type2Speed"
@@ -168,13 +168,39 @@
       }
       footer {
         width: 100%;
-        background-color: #212529;
-        color: white;
-        text-align: center;
-        padding: 10px 0;
+        background-color: #212529;  /* Dark background */
+        color: white;  /* White text */
+        text-align: center;  /* Centered text */
+        padding: 10px 0;  /* Padding for spacing */
         position: relative;
-        bottom: 0;
-      }
+        bottom: 0;  /* Fixed to bottom */
+    }
+    
+    .footer-header h5 {
+        margin-bottom: 10px;  /* Adds space below the header */
+    }
+    
+    .footer-links a {
+        color: white;
+        text-decoration: none;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    .footer-links a:hover {
+        text-decoration: underline;  /* Underline on hover */
+    }
+    
+    footer p {
+        margin-bottom: 5px;
+    }
+    footer p.small.text-muted {
+      color: #fff; /* White color */
+      font-size: 1rem; /* Normal font size */
+  }
+  
+  
+    
 
     </style>
 
@@ -236,26 +262,45 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'typing-games' %}">🎮 Games</a>
             </li>
+            <!-- Learn Section -->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'learn' %}">📚 Learn</a>
+            </li>
+            <!-- Language Section -->
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'languages' %}">🌍 Languages</a>
+            </li>
           </ul>
         </div>
       </div>
     </nav>
+    
 
     <div class="container my-4">{% block content %}{% endblock %}</div>
 
-    <footer class="bg-dark text-white py-3 text-center">
-      <p class="mb-1">
-        Brought to you by <span class="fw-bold">Aditya & Amar</span>
-      </p>
-      <p class="mb-0">
-        &copy; 2025 <strong>Type2Speed</strong>. All Rights Reserved.
-      </p>
-      <!-- Links Section -->
-      <div class="mt-3">
-        <a href="{% url 'privacy-policy' %}" class="text-white text-decoration-none mx-3">Privacy Policy</a> |
-        <a href="{% url 'terms-and-conditions' %}" class="text-white text-decoration-none mx-3">Terms & Conditions</a>
+    <footer class="footer">
+      <!-- Footer Header -->
+      <div class="footer-header mb-3">
+          <h5 class="fw-bold mb-0">Brought to you by <span class="fw-bold">Aditya & Amar</span></h5>
       </div>
-    </footer>
+  
+      <!-- Copyright Section -->
+      <p class="mb-2">
+          &copy; 2025 <strong>Type2Speed</strong>. All Rights Reserved.
+      </p>
+  
+      <!-- Links Section -->
+      <div class="footer-links mt-3">
+          <a href="{% url 'privacy-policy' %}" class="text-white text-decoration-none mx-3" title="Privacy Policy">Privacy Policy</a> |
+          <a href="{% url 'terms-and-conditions' %}" class="text-white text-decoration-none mx-3" title="Terms & Conditions">Terms & Conditions</a> |
+          <a href="{% url 'blog-list' %}" class="text-white text-decoration-none mx-3" title="Read Our Blog">Blogs</a>
+      </div>
+  
+      <!-- Optional SEO Description -->
+      <p class="mt-3 small text-muted">Stay updated with the latest news, tips, and insights on typing speed, accuracy, and government exams from Type2Speed.</p>
+  </footer>
+  
+  
     
 
     <!-- Bootstrap JS -->

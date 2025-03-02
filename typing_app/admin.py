@@ -4,8 +4,8 @@ from .models import *
 
 @admin.register(ExamContent)
 class ExamContentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_exam_types', 'has_english', 'has_hindi', 'duration', 'created_at')  # ✅ Improved List Display
-    search_fields = ('passage_english', 'passage_hindi')  # ✅ Enables search for passages
+    list_display = ('id', 'get_exam_types', 'has_english', 'has_hindi','has_german', 'has_french', 'duration', 'created_at')  # ✅ Improved List Display
+    search_fields = ('passage_english', 'passage_hindi', 'passage_german', 'passage_french')  # ✅ Enables search for passages
     list_filter = ('exam_types',)  # ✅ Adds filter for exam types
     ordering = ('-created_at',)  # ✅ Orders newest passages first
     list_per_page = 20  # ✅ Limits per page entries for better readability
@@ -33,6 +33,23 @@ class ExamContentAdmin(admin.ModelAdmin):
     has_hindi.boolean = True
     has_hindi.short_description = "Hindi Available"
 
+    def has_german(self, obj):
+        if obj.passage_german is None or obj.passage_german.strip().lower() == "none" or obj.passage_german.strip() == "":
+            return False
+        return True
+
+    has_german.boolean = True
+    has_german.short_description = "German Available"
+
+    def has_french(self, obj):
+        if obj.passage_french is None or obj.passage_french.strip().lower() == "none" or obj.passage_french.strip() == "":
+            return False
+        return True
+
+    has_french.boolean = True
+    has_french.short_description = "French Available"
+
+
 
 
 @admin.register(ExamType)
@@ -46,6 +63,15 @@ class ExamTypeAdmin(admin.ModelAdmin):
         return obj.instructions[:50] + "..." if obj.instructions else "No instructions found"
 
     instructions_preview.short_description = "Instructions"
+
+
+
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'created_at', 'is_published')
+    list_filter = ('is_published',)
+    search_fields = ('title', 'content')
 
 
 # @admin.register(TestResult)

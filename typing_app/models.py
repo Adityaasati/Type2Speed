@@ -1,6 +1,6 @@
 from django.db import models
-
-
+from django.utils import timezone
+from django.utils.text import slugify
 
 class ExamContent(models.Model):
     """Stores typing test passages for multiple exams."""
@@ -9,6 +9,8 @@ class ExamContent(models.Model):
     # passage = models.TextField(help_text="Typing passage for the test", blank=True)
     passage_english = models.TextField(blank=True, null=True)  # English passage (CPCT)
     passage_hindi = models.TextField(blank=True, null=True)
+    passage_german = models.TextField(blank=True, null=True)  # For German
+    passage_french = models.TextField(blank=True, null=True)  # For French
     duration = models.IntegerField(default=15, help_text="Duration in minutes")  # ✅ Custom duration
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -112,17 +114,31 @@ class TypingGameResult(models.Model):
 
 
 
-from django.db import models
-from django.utils.text import slugify
 
-class Snippet(models.Model):
-    title = models.CharField(max_length=80)
-    slug = models.SlugField(blank=True, null=True)
-    body = models.TextField()
+
+class Blog(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    author = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    description = models.CharField(max_length=255, blank=True)
+    keywords = models.CharField(max_length=750, blank=True)
+    featured_image = models.ImageField(upload_to='blogs/', blank=True, null=True)
+    ads_code = models.TextField(blank=True, null=True)  # Store ad code if needed for monetization
+    is_published = models.BooleanField(default=False)
+    slug = models.SlugField(unique=True, blank=True, null=True, max_length=255) 
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        # Automatically generate the slug from the title if it's empty
+        if not self.slug:
+            self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return f'/{self.slug}'
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ['-created_at']
+
+

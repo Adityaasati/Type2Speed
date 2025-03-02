@@ -93,6 +93,8 @@ DATABASES = {
 LANGUAGES = [
     ('en', 'English'),
     ('hi', 'Hindi'),
+    ('de', 'German'), 
+    ('fr', 'French'), 
 ]
 
 # Password validation
@@ -119,7 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 USE_L10N = True

@@ -56,7 +56,7 @@ def passages_view(request, exam_type):
             "message": f"No passages found for {exam_type}. Please contact support."
         }, status=404)
 
-    if exam_type == "CPCT":
+    if exam_type == "CPCT" or exam_type == "NTPC" or exam_type == "ARO" :
         # ✅ Fetch separate lists of Hindi and English passages (max 10 each)
         hindi_passages = ExamContent.objects.filter(
             exam_types=exam_type_obj
@@ -82,6 +82,29 @@ def passages_view(request, exam_type):
             "passages_data": passages_data,
             "predefined_durations": predefined_durations
         })
+
+# views.py
+
+# def passages_languages_view(request, exam_type, language, duration):
+#     # Define the possible predefined durations and languages for reference (in case you need them later)
+#     predefined_durations = [5, 10, 15, 20, 25, 30]
+#     languages = ["Hindi", "English", "German", "French"]
+
+#     # Check if the passed language and duration are valid
+#     if language not in languages:
+#         return render(request, "typing_app/error.html", {"error": "Invalid language selected!"})
+#     if duration not in predefined_durations:
+#         return render(request, "typing_app/error.html", {"error": "Invalid duration selected!"})
+
+#     # Now, pass the selected language and duration to the template
+#     return render(request, "typing_app/practise_instructions.html", {
+#         "exam_type": exam_type,
+#         "language": language,
+#         "duration": duration,
+#         "languages": languages,
+#         "predefined_durations": predefined_durations,
+#     })
+
 
 
 def practise_instruction_view(request, exam_type):
@@ -109,7 +132,8 @@ def practise_instruction_view(request, exam_type):
 
 def instruction_view(request, exam_type, passage_id):
     """Displays instructions for the selected exam type and passage."""
-    language = request.GET.get("language", "english")
+    language = request.GET.get("language", "english").lower()
+    print(exam_type,"yhi hai")
     
 
     # ✅ Get the exam type object and instructions
@@ -138,16 +162,19 @@ def instruction_view(request, exam_type, passage_id):
 
 
 
-def typing_test_view(request, exam_type, passage_id=None, language="english"):
+def typing_test_view(request, exam_type, passage_id=None, language="english",duration=10):
     """ Fetches a passage dynamically if passage_id is not provided. """
 
+    
     if passage_id:
         # ✅ Get the passage using the provided ID
         exam_content = get_object_or_404(ExamContent, id=passage_id)
+        print(exam_type,passage_id)
     else:
         # ✅ Fetch passages dynamically based on exam type
         if exam_type == "PRACTISE":
-            language = request.GET.get("language", "english")  # ✅ Get language from URL
+            language = request.GET.get("language", "english").lower()
+            # ✅ Get language from URL
             selected_duration = int(request.GET.get("duration", 10))  
 
             # ✅ Filter by exam type, language, and duration
@@ -156,11 +183,21 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
                     exam_types__name=exam_type,
                     duration=selected_duration
                 ).exclude(passage_english__isnull=True).exclude(passage_english="")
-            else:  # Hindi case
+            elif language == "hindi":  # Hindi case
                 exam_contents = ExamContent.objects.filter(
                     exam_types__name=exam_type,
                     duration=selected_duration
                 ).exclude(passage_hindi__isnull=True).exclude(passage_hindi="")
+            elif language == "german":  # German case
+                exam_contents = ExamContent.objects.filter(
+                    exam_types__name=exam_type,
+                    duration=selected_duration
+                ).exclude(passage_german__isnull=True).exclude(passage_german="")
+            else :  # Hindi case
+                exam_contents = ExamContent.objects.filter(
+                    exam_types__name=exam_type,
+                    duration=selected_duration
+                ).exclude(passage_french__isnull=True).exclude(passage_french="")
         else:
 
             # ✅ Fetch correct passages for CGL, CHSL, and all other exams (Only English)
@@ -183,11 +220,16 @@ def typing_test_view(request, exam_type, passage_id=None, language="english"):
     if exam_type != "PRACTISE":
         selected_duration = exam_content.duration  
 
-    # ✅ Select the passage text based on language
+    
     if language == "hindi":
         passage = exam_content.passage_hindi
+    elif language == "german":
+        passage = exam_content.passage_german
+    elif language == "french":
+        passage = exam_content.passage_french
     else:
         passage = exam_content.passage_english
+
 
     return render(request, "typing_app/typing_test.html", {
         "exam_type": exam_type,
@@ -382,13 +424,20 @@ def test_result_view(request, exam_type):
         backspaces = int(request.POST.get('backspaces', 0))
         spaces = int(request.POST.get('spaces', 0))
 
-    
-            
-        if request.POST.get("language") == "hindi":
-            passage = exam_content.passage_hindi.strip() if exam_content.passage_hindi else ""  # Use passage_hindi for Hindi
-        else:
-            passage = exam_content.passage_english.strip() if exam_content.passage_english else ""  # Use passage_english for English
 
+        
+        language = request.GET.get("language") or "english" 
+            
+        if language == "hindi":
+            passage = exam_content.passage_hindi.strip() if exam_content.passage_hindi else ""  # Use passage_hindi for Hindi
+        elif language == "english":
+            passage = exam_content.passage_english.strip() if exam_content.passage_english else ""  # Use passage_english for English
+        elif language == "german":
+            passage = exam_content.passage_german.strip() if exam_content.passage_german else ""
+        elif language == "french":
+            passage = exam_content.passage_french.strip() if exam_content.passage_french else ""
+        
+        
         # Normalize the text (Remove extra spaces)
         passage = re.sub(r'\s+', ' ', passage)
         
@@ -396,17 +445,17 @@ def test_result_view(request, exam_type):
         duration = exam_content.duration
 
         # ✅ Minimal Calculation for CPCT
-        if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type == "NTPC":
+        if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type == "NTPC" or exam_type == "ARO":
             result = calculate_all_metrics(passage, user_input,duration)
         else:
             result = calculate_ssc_view(passage, user_input,duration)  # Default SSC method
+            
 
       
         nwpm = result.get("net_wpm", 0)
         language = request.POST.get("language", "english") 
         scaled_score = calculate_scaled_score(nwpm,language, exam_type)
-        
-        if exam_type == "CPCT" or exam_type =="PRACTICE" or exam_type =="NTPC":
+        if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type =="NTPC" or exam_type == "ARO":
 
             return render(request, "typing_app/result.html", {
                 "exam_type": exam_type,
@@ -527,6 +576,33 @@ def submit_typing_game_result(request, game_name):
         return JsonResponse({"message": "Result saved!", "session_id": session_id})
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+def blog_list(request):
+    blogs = Blog.objects.filter(is_published=True)
+    return render(request, 'blogs/blog_list.html', {'blogs': blogs})
+
+def blog_detail(request, slug):
+    blog = get_object_or_404(Blog, slug=slug, is_published=True)
+    return render(request, 'blogs/blog_detail.html', {'blog': blog})
+
+
+
+def learn(request):
+    return render(request, "typing_app/coming_soon.html")
+
+def languages(request):
+    predefined_durations = [5, 10, 15, 20, 25, 30]
+    languages = ["Hindi","English","German","French"]
+    return render(request, "navbar/languages.html", {
+        "exam_type":'PRACTISE',
+        "languages": languages,
+        "predefined_durations": predefined_durations,  # ✅ Allow user to select duration
+    })
+
+
+
 
 def privacy_policy(request):
     return render(request, 'typing_app/privacy_policy.html')

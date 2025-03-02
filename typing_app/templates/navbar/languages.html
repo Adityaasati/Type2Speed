@@ -1,0 +1,129 @@
+{% extends 'typing_app/base.html' %}
+
+{% block title %}Select Language and Timings - Type2Speed{% endblock %}
+{% block meta_description %}Select your preferred language and timings to start your typing practice. Enhance your skills in Hindi, English, German, and French!{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold">🌍 Select Language and Timing</h1>
+    <p class="lead">Choose your preferred language and set the timings to start practicing!</p>
+</div>
+
+<div class="container">
+    <!-- Language Selection -->
+    <div class="row mt-4 justify-content-center g-3">
+        {% for language in languages %}
+        <div class="col-md-3 col-sm-6 d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-primary btn-lg w-100 language-btn" data-language="{{ language }}">
+                {{ language }}
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Timing Selection -->
+    <div class="row mt-4 justify-content-center g-3">
+        {% for time in predefined_durations %}
+        <div class="col-md-2 col-sm-4 d-flex justify-content-center">
+            <button type="button" class="btn btn-outline-success btn-lg w-100 timing-btn" data-timing="{{ time }}">
+                {{ time }} min
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Proceed Button (now as a link) -->
+    <div class="row mt-4 justify-content-center">
+        <div class="col-md-4 col-sm-6">
+            <a id="practiceTestButton" href="#" class="btn btn-primary btn-lg w-100" disabled>
+                ✅ Proceed ➡️
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Ad Space -->
+<div class="container text-center my-5">
+    {% include 'typing_app/ads.html' with position="languages-page" %}
+</div>
+
+<script>
+    let selectedLanguage = '';
+    let selectedTiming = '';
+    let examType = 'PRACTISE'; // Exam type is set to PRACTISE
+
+    // Handle Language Selection
+    const languageButtons = document.querySelectorAll('.language-btn');
+    languageButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            selectedLanguage = this.getAttribute('data-language');
+            updateButtonStyle(languageButtons, this); // Update style for languages
+            updateProceedButton(); // Enable or disable proceed button
+        });
+    });
+
+    // Handle Timing Selection
+    const timingButtons = document.querySelectorAll('.timing-btn');
+    timingButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            selectedTiming = this.getAttribute('data-timing');
+            updateButtonStyle(timingButtons, this); // Update style for timings
+            updateProceedButton(); // Enable or disable proceed button
+        });
+    });
+
+    // Update Style for Selected Button
+    function updateButtonStyle(buttons, selectedButton) {
+        buttons.forEach(button => {
+            button.classList.remove('selected'); // Remove 'selected' from all buttons
+        });
+        selectedButton.classList.add('selected'); // Add 'selected' class to the clicked button
+    }
+
+    // Update the Proceed Button and Link
+    function updateProceedButton() {
+        const proceedButton = document.getElementById('practiceTestButton');
+        
+        // Enable the button if both language and timing are selected
+        if (selectedLanguage && selectedTiming) {
+            proceedButton.style.pointerEvents = 'auto'; // Enable clicking
+            proceedButton.removeAttribute('aria-disabled');
+
+            // Construct the URL dynamically with selected language and duration using Django URL tag
+            const url = `{% url 'typing-test' exam_type %}?language=${selectedLanguage}&duration=${selectedTiming}`;
+
+            // Update link href with the correct URL
+            proceedButton.href = url;
+
+        } else {
+            proceedButton.style.pointerEvents = 'none'; // Disable clicking
+            proceedButton.setAttribute('aria-disabled', 'true');
+        }
+    }
+
+    // Ensure the correct link is set on page load
+    document.addEventListener("DOMContentLoaded", updateProceedButton);
+</script>
+
+<!-- Add CSS for Highlighting -->
+<style>
+    .language-btn.selected,
+    .timing-btn.selected {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .language-btn:hover,
+    .timing-btn:hover {
+        cursor: pointer;
+        opacity: 0.9;
+    }
+    #practiceTestButton[aria-disabled="true"] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+</style>
+
+{% endblock %}

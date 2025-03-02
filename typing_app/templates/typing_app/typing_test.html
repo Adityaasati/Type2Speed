@@ -69,6 +69,23 @@
     .cgl-chsl .col-md-4 {
         display: none; /* Hide stats section */
     }
+
+        .mangal {
+            font-family: 'Mangal', sans-serif;
+            font-size: 22px;
+        }
+    
+        .devanagari {
+            font-family: 'Devanagari', serif;
+            font-size: 22px;
+        }
+    
+        .krutiDev {
+            font-family: 'Kruti Dev', sans-serif;
+            font-size: 22px;
+        }
+
+    
 </style>
 
 <div class="container my-4">
@@ -101,10 +118,20 @@
       </button>
     </div>
 
-    {% if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type == "NTPC" %}
+    {% if exam_type == "CPCT" or exam_type == "PRACTISE" or exam_type == "NTPC" or exam_type == "ARO" %}
     <div class="col-md-4">
       <div class="stats-box p-3 border rounded bg-light">
         {% if language == "hindi" %}
+        <!-- Font Selector Dropdown -->
+<div class="mb-3">
+        <select id="fontSelector" class="form-select" onchange="changeFont()" aria-label="Select Font">
+
+        <option value="mangal" selected>Mangal</option>
+        <option value="devanagari">Devanagari</option>
+        <option value="krutiDev">Kruti Dev</option>
+    </select>
+</div>
+
         <label for="keyboardType">Select Keyboard Type:</label>
         <select id="keyboardType" class="form-select">
             <option value="remington">Remington (Traditional)</option>
@@ -142,7 +169,9 @@
 </div>
 
 <!-- Hidden Form to Send Data -->
-<form id="resultForm" method="POST" action="{% url 'test-result' exam_type %}">
+<!-- <form id="resultForm" method="POST" action="{% url 'test-result' exam_type %}"> -->
+<form id="resultForm" method="POST" action="{% url 'test-result' exam_type=exam_type %}?language={{ language }}">
+
   {% csrf_token %}
   <input type="hidden" name="passage_id" value="{{ passage_id }}" />
   <input type="hidden" name="exam_type" value="{{ exam_type }}" />
@@ -156,6 +185,29 @@
 </form>
 
 <script>
+    function changeFont() {
+        var selectedFont = document.getElementById("fontSelector").value;
+        var textElement = document.getElementById("passageText");
+    
+        // Save selected font to localStorage
+        localStorage.setItem("preferredFont", selectedFont);
+    
+        // Remove previous font classes
+        textElement.classList.remove("mangal", "devanagari", "krutiDev");
+    
+        // Add the selected font class
+        textElement.classList.add(selectedFont);
+    }
+    
+    // Apply font from localStorage on page load
+    window.onload = function () {
+        var savedFont = localStorage.getItem("preferredFont");
+        if (savedFont) {
+            document.getElementById("fontSelector").value = savedFont;
+            changeFont();  // Apply saved font
+        }
+    }
+    
     document.addEventListener("DOMContentLoaded", function () {
         let passageTextElement = document.getElementById("passageText");
         let userInputElement = document.getElementById("userInput");
@@ -216,7 +268,7 @@
             let typedWords = inputVal.split(/\s+/).filter(Boolean).length;
             let pendingWords = Math.max(0, passageWordCount - typedWords);
     
-            let isCPCT = "{{ exam_type }}" === "CPCT" || "{{ exam_type }}" === "PRACTISE" || "{{ exam_type }}" === "NTPC";
+            let isCPCT = "{{ exam_type }}" === "CPCT" || "{{ exam_type }}" === "PRACTISE" || "{{ exam_type }}" === "NTPC" || "{{ exam_type }}" === "ARO";
     
             if (isCPCT) {
                 updateStat("errorCount", errors);
@@ -264,6 +316,7 @@
     
         window.submitResult = function () {
             let userInputElement = document.getElementById("userInput");
+            console.log(userInputElement)
         
             if (!userInputElement) {
                 console.error("User input element not found!");

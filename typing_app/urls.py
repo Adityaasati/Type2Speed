@@ -15,6 +15,10 @@ urlpatterns = [
     path('tips/', tips_view, name="tips"),
     path('tests/', tests_view, name="tests"),
     path("passages/<str:exam_type>/", passages_view, name="passages"),
+    # path("passages/<str:exam_type>/<str:language>/<int:duration>/", passages_languages_view, name="passages-languages"),
+    # urls.py
+    # path("passages/<str:exam_type>/<str:language>/<int:duration>/", typing_test_view, name="passages-languages"),
+
     path("instructions/<str:exam_type>/<int:passage_id>/", instruction_view, name="instructions"),
     path("practise-instructions/<str:exam_type>/", practise_instruction_view, name="practise-instructions"),
     path('typing-test/<str:exam_type>/', typing_test_view, name="typing-test"),
@@ -25,6 +29,10 @@ urlpatterns = [
     path("games/", typing_games_view, name="typing-games"),
     path("games/<str:game_name>/", typing_game_view, name="typing-game"),
     path("games/<str:game_name>/submit/", submit_typing_game_result, name="submit-typing-game"),
+    path('blogs/', blog_list, name='blog-list'),
+    path('blog/<slug:slug>/', blog_detail, name='blog-detail'),
+    path('learn/', learn, name='learn'),
+    path('languages/', languages, name='languages'),
     path('privacy-policy/', privacy_policy, name='privacy-policy'),
     path('terms-and-conditions/', terms_and_conditions, name='terms-and-conditions'),
     path('ads.txt/', ads_get, name='ads-get'),

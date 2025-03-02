@@ -1,6 +1,5 @@
 from django.contrib.sitemaps import Sitemap
 from django.shortcuts import reverse
-from .models import *  # Assuming Passage model holds exam_type, passage_id, and other related data
 
 class StaticViewSitemap(Sitemap):
     def items(self):
@@ -15,13 +14,17 @@ class DynamicPagesSitemap(Sitemap):
         return ['passages', 'instructions', 'typing-test', 'test-result', 'practise-instructions', 'typing-games', 'typing-game', 'submit-typing-game']
 
     def location(self, item):
+        print(f"Generating URL for: {item}")  # Debug print
+        
         # Handle static URLs first
         if item == 'passages':
             exam_types = ['CPCT', 'CHSL', 'CGL', 'NTPC', 'PRACTISE']
             urls = []
             for exam_type in exam_types:
                 # Generate URL for passages
-                urls.append(reverse(item, args=[exam_type]))
+                url = reverse(item, args=[exam_type])
+                print(f"Passages URL: {url}")  # Debug print
+                urls.append(url)
             return urls
 
         elif item == 'instructions':
@@ -31,8 +34,9 @@ class DynamicPagesSitemap(Sitemap):
             urls = []
             for exam_type in exam_types:
                 for passage_id in passage_ids:
-                    # Generate URL for instructions page
-                    urls.append(reverse(item, args=[exam_type, passage_id]))
+                    url = reverse(item, args=[exam_type, passage_id])
+                    print(f"Instructions URL: {url}")  # Debug print
+                    urls.append(url)
             return urls
 
         elif item == 'typing-test':
@@ -41,40 +45,48 @@ class DynamicPagesSitemap(Sitemap):
             urls = []
             for exam_type in exam_types:
                 for passage_id in passage_ids:
-                    # Generate URL for exam-specific typing test
-                    urls.append(reverse('typing-test-exam-specific', args=[exam_type, passage_id]))
+                    url = reverse('typing-test-exam-specific', args=[exam_type, passage_id])
+                    print(f"Typing Test URL: {url}")  # Debug print
+                    urls.append(url)
             return urls
 
         elif item == 'test-result':
             exam_types = ['CPCT', 'CHSL', 'CGL', 'NTPC', 'PRACTISE']
             urls = []
             for exam_type in exam_types:
-                # Generate URL for test results page
-                urls.append(reverse(item, args=[exam_type]))
+                url = reverse(item, args=[exam_type])
+                print(f"Test Result URL: {url}")  # Debug print
+                urls.append(url)
             return urls
 
         elif item == 'practise-instructions':
             # Only for 'practise' exam type
-            return [reverse(item, args=['practise'])]
+            url = reverse(item, args=['practise'])
+            print(f"Practise Instructions URL: {url}")  # Debug print
+            return [url]
 
         elif item == 'typing-games':
             # Static URL for typing games
-            return [reverse(item)]
+            url = reverse(item)
+            print(f"Typing Games URL: {url}")  # Debug print
+            return [url]
 
         elif item == 'typing-game':
-            game_names = ['game1', 'game2', 'game3']  # Example game names, can be fetched dynamically if needed
+            game_names = ['game1', 'game2', 'game3']  # Example game names
             urls = []
             for game_name in game_names:
-                # Generate URL for each typing game
-                urls.append(reverse(item, args=[game_name]))
+                url = reverse(item, args=[game_name])
+                print(f"Typing Game URL: {url}")  # Debug print
+                urls.append(url)
             return urls
 
         elif item == 'submit-typing-game':
             game_names = ['game1', 'game2', 'game3']
             urls = []
             for game_name in game_names:
-                # Generate URL for submitting typing game results
-                urls.append(reverse(item, args=[game_name]))
+                url = reverse(item, args=[game_name])
+                print(f"Submit Typing Game URL: {url}")  # Debug print
+                urls.append(url)
             return urls
 
         return reverse(item)

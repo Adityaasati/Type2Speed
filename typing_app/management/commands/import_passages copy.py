@@ -41,7 +41,7 @@ class Command(BaseCommand):
                     duration = int(duration_str)
                 except ValueError:
                     # If it's not a valid number, skip this row or set a default value
-                    self.stdout.write(self.style.ERROR(f"Invalid duration value for {exam_type_names} in row {reader.line_num}: '{duration_str}', skipping..."))
+                    self.stdout.write(self.style.ERROR(f"Invalid duration value for {exam_type_names}, skipping..."))
                     continue  # Skip the row if duration is invalid
 
                 # Get or create ExamType(s)
