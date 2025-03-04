@@ -16,8 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.sitemaps.views import sitemap
+from typing_app.sitemaps import * # Import from app-level sitemaps
+from django.urls import path, include, re_path
+from django.contrib.staticfiles.views import serve
+
+
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'dynamic': DynamicPagesSitemap,
+}
 
 urlpatterns = [
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('admin/', admin.site.urls),
     path('', include('typing_app.urls')),
+    re_path(r'^robots\.txt$', serve, {'path': 'robots.txt'}),
+
+    
 ]

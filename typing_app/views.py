@@ -165,7 +165,6 @@ def instruction_view(request, exam_type, passage_id):
 def typing_test_view(request, exam_type, passage_id=None, language="english",duration=10):
     """ Fetches a passage dynamically if passage_id is not provided. """
 
-    
     if passage_id:
         # ✅ Get the passage using the provided ID
         exam_content = get_object_or_404(ExamContent, id=passage_id)
